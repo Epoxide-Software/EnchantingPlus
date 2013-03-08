@@ -9,6 +9,9 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * User: Stengel
  * Date: 2/24/13
@@ -31,14 +34,30 @@ public class ItemPocketEnchanter extends Item {
     }
 
     @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
-        if (world.isRemote) {
-            return true;
-        } else {
+    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) { // changed by Slash
+        if (!par2World.isRemote) {
             if (EnchantingPlus.useMod) {
-                player.openGui(EnchantingPlus.instance, 1, world, x, y, z);
+            	par3EntityPlayer.openGui(EnchantingPlus.instance, 1, par2World, (int)par3EntityPlayer.posX, (int)par3EntityPlayer.posY, (int)par3EntityPlayer.posZ);
             }
-            return true;
         }
+        return par1ItemStack;
+    }
+    
+    @Override
+    public String getTextureFile () { // created by Slash
+        return "/eplus/items.png";
+    }
+    
+    @SideOnly(Side.CLIENT) // created by Slash
+    @Override
+    public int getIconFromDamage(int i){
+    	return 2; 
+    }
+    
+    @SideOnly(Side.CLIENT) // created by Slash
+    @Override
+    public boolean hasEffect(ItemStack par1ItemStack)
+    {
+        return true;
     }
 }
