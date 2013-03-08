@@ -27,12 +27,12 @@ public class Version implements Runnable {
 
     public static String getRecommendedVersion()
     {
-        return ((Integer.valueOf(recommendedVersion.substring(recommendedVersion.lastIndexOf(".") + 1 )) > (Integer.valueOf(currentModVersion.substring(currentModVersion.lastIndexOf(".") + 1 ))))) ? recommendedVersion : currentModVersion;
+        return recommendedVersion;
     }
 
     public static String getCurrentModVersion()
     {
-        return (currentVersion == EnumUpdateState.BETA) ? currentModVersion + "." + BUILD : currentModVersion;
+        return currentModVersion;
     }
 
     public static boolean versionSeen() {
@@ -144,7 +144,7 @@ public class Version implements Runnable {
 
         String major = props.getProperty("eplus.major.number");
         String minor = props.getProperty("eplus.minor.number");
-        String build = props.getProperty("eplus.reference.number");
+        String build = props.getProperty("eplus.build.number");
         currentModVersion = major + "." + minor + "." + build;
     }
 
