@@ -6,17 +6,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
 
+@SuppressWarnings("ALL")
 public class GuiIcon extends Gui
 {
-    public String     id;
+    public final String     id;
     public static int startingX;
     public static int startingY;
-    public int        index;
-    public int        xPos;
-    public int        yPos;
-    public int        width;
-    public int        height;
-    public boolean    draw;
+    public final int        index;
+    public final int        xPos;
+    public final int        yPos;
+    public final int        width;
+    public final int        height;
+    public final boolean    draw;
     public boolean    enabled;
     public boolean    isButton;
     public String     info = "";
@@ -45,8 +46,7 @@ public class GuiIcon extends Gui
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        int var4 = var1.renderEngine.getTexture("/eplus/enchant" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
-        var1.renderEngine.bindTexture(var4);
+        var1.renderEngine.func_98187_b("/eplus/enchant" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
         this.drawTexturedModalRect(xPos, yPos, 24 + index * 16, 238, width, height);
     }
 

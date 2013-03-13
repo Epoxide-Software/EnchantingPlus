@@ -28,23 +28,23 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+@SuppressWarnings("ALL")
 public class ContainerEnchanting extends Container {
-    public EntityPlayer player;
+    public final EntityPlayer player;
 
     public static int bookshelves;
-    public int xPosition;
-    public int yPosition;
-    public int zPosition;
+    public final int xPosition;
+    public final int yPosition;
+    public final int zPosition;
     public int serverShelves;
 
-    public World gameWorld;
+    public final World gameWorld;
 
     GuiEnchantmentPlus guiEnchantmentPlus;
 
-    public InventoryEnchanting inventoryEnchanting;
+    public final InventoryEnchanting inventoryEnchanting;
 
     public ContainerEnchanting(EntityPlayer player, World world, int x, int y, int z) {
         super();
@@ -82,7 +82,7 @@ public class ContainerEnchanting extends Container {
         return true;
     }
 
-    public boolean doEnchant(EntityPlayer player, EnchantmentData[] var1, int var2, int windowid)
+    public void doEnchant(EntityPlayer player, EnchantmentData[] var1, int var2)
     {
 
         ItemStack var3 = (ItemStack) this.inventoryItemStacks.get(0);
@@ -111,9 +111,7 @@ public class ContainerEnchanting extends Container {
 
             ((EntityPlayerMP) player).sendSlotContents(this, 0, var3);
 
-            return true;
         } else {
-            return false;
         }
     }
 
@@ -146,14 +144,14 @@ public class ContainerEnchanting extends Container {
             // book without any StoredEnchantments needs to be converted to a normal book ID
             if (var5) { // created by Slash
             	//if (var3.getEnchantmentTagList() == null) { // modified by Slash
-            	if (var3.stackTagCompound == null || ((NBTTagList)var3.stackTagCompound.getTag(wordSearch) == null)) {
+            	if (var3.stackTagCompound == null || (var3.stackTagCompound.getTag(wordSearch) == null)) {
             		var3.itemID = Item.book.itemID;            		
             	}
             }
             else {
-            	if (var3.stackTagCompound == null || ((NBTTagList)var3.stackTagCompound.getTag(wordSearch) == null)) { // created by Slash
+            	if (var3.stackTagCompound == null || (var3.stackTagCompound.getTag(wordSearch) == null)) { // created by Slash
             		if (EnchantingPlus.allowDestroyItemOnDisenchanting){
-            	        this.inventoryEnchanting.setInventorySlotContents(0, (ItemStack)null);
+            	        this.inventoryEnchanting.setInventorySlotContents(0, null);
             	        player.worldObj.playSoundAtEntity(player, "random.break", 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F);
             		}
             	}
@@ -200,7 +198,7 @@ public class ContainerEnchanting extends Container {
         }
         
         String wordSearch = getEnchantmentSearchWord(var2); // modified by Slash
-        if (wordSearch == "") return; // modified by Slash
+        if (wordSearch.equals("")) return; // modified by Slash
         
         //if (!var2.stackTagCompound.hasKey("ench")) return  // modified by Slash
 
@@ -292,8 +290,8 @@ public class ContainerEnchanting extends Container {
     private void getServerBooks()
     {
         if (!gameWorld.isRemote) {
-            this.bookshelves = getTotalBookshelves();
-            Packet250CustomPayload packet = PacketBase.createPacket(99, new byte[] { (byte) this.bookshelves, (byte) 1 });
+            bookshelves = getTotalBookshelves();
+            Packet250CustomPayload packet = PacketBase.createPacket(99, new byte[] { (byte) bookshelves, (byte) 1 });
             PacketDispatcher.sendPacketToAllPlayers(packet);
 
         }
@@ -342,7 +340,7 @@ public class ContainerEnchanting extends Container {
             }
 
             if (itemStack.stackSize == 0) {
-                itemSlot.putStack((ItemStack) null);
+                itemSlot.putStack(null);
             } else {
                 itemSlot.onSlotChanged();
             }
@@ -364,19 +362,13 @@ public class ContainerEnchanting extends Container {
         // {
         // return true;
         // }
-        if (getSlot(0).getStack() != null && getSlot(1).getStack() != null) {
-            return false;
-        } else if (!var2.getItem().isItemTool(var2)) {
-            return false;
-        } else {
-            return true;
-        }
+        return getSlot(0).getStack() == null || getSlot(1).getStack() == null && var2.getItem().isItemTool(var2);
     }
 
     public void doEnchant(ItemStack stack, EntityPlayer player, EnchantmentData[] var1, int var2, int windowid)
     {
         this.inventoryItemStacks.set(0, stack);
-        doEnchant(player, var1, var2, windowid);
+        doEnchant(player, var1, var2);
 
     }
 
@@ -387,7 +379,7 @@ public class ContainerEnchanting extends Container {
 
     }
 
-    public void repair(ItemStack itemStack, EntityPlayer playerEntity, int repairCost)
+    public void repair(ItemStack itemStack, int repairCost)
     {
         this.inventoryItemStacks.set(0, itemStack);
 
@@ -409,12 +401,8 @@ public class ContainerEnchanting extends Container {
 
     }
 
-    public void transfer(ItemStack stack, ItemStack stack2, EntityPlayerMP playerEntity, int transferCost)
+    public void transfer(ItemStack itemStack, ItemStack itemStack1, EntityPlayerMP playerEntity, int transferCost)
     {
-
-    	ItemStack itemStack = stack; // modified by Slash
-    	ItemStack itemStack1 = stack2; // modified by Slash
-    	
         if (!this.gameWorld.isRemote) {
             if (!player.capabilities.isCreativeMode) {
                 player.addExperienceLevel(-transferCost);
@@ -491,19 +479,18 @@ public class ContainerEnchanting extends Container {
             }
             ArrayList<EnchantmentItemData> list = guiEnchantmentPlus.readItem(var1);
             if (list != null) {
-                for (int var2 = 0; var2 < list.size(); var2++) {
-                    guiEnchantmentPlus.possibleDisenchantments.add(list.get(var2));
+                for (EnchantmentItemData aList : list) {
+                    guiEnchantmentPlus.possibleDisenchantments.add(aList);
                 }
             }
 
             if (var1.itemID == Item.enchantedBook.itemID) {
                 Map var20 = EnchantmentHelper.getEnchantments(var1);
-                Iterator var27 = var20.keySet().iterator();
 
-                while (var27.hasNext()) {
-                    int id = ((Integer) var27.next()).intValue();
+                for (Object o : var20.keySet()) {
+                    int id = (Integer) o;
                     Enchantment enchan = Enchantment.enchantmentsList[id];
-                    int level = ((Integer) var20.get(Integer.valueOf(id))).intValue();
+                    int level = (Integer) var20.get(id);
 
                     guiEnchantmentPlus.possibleDisenchantments.add(new EnchantmentItemData(enchan, level, bookshelves));
                 }
@@ -513,7 +500,7 @@ public class ContainerEnchanting extends Container {
                 guiEnchantmentPlus.getIcon("Repair").enabled = guiEnchantmentPlus.canPurchase(guiEnchantmentPlus.getRepairCost());
             }
 
-            if (var1.getItem().getItemEnchantability() > 0 | !EnchantingPlus.strictEnchant) { // this IF was created by Slash
+            if (var1.getItem().getItemEnchantability() > 0 | !EnchantingPlus.strictEnchant || EnchantingPlus.unbreakingAll) { // this IF was created by Slash
 	            for (Enchantment var2 : Enchantment.enchantmentsList) {
 	                boolean var3 = true;
 	                if (var2 == null) {
@@ -531,6 +518,8 @@ public class ContainerEnchanting extends Container {
 	
 	                if (!EnchantingPlus.strictEnchant) {
 	                    guiEnchantmentPlus.possibleEnchantments.add(var2);
+                    } else if (EnchantingPlus.unbreakingAll && var2.equals(Enchantment.unbreaking))  {
+                        guiEnchantmentPlus.possibleEnchantments.add(var2);
 	                } else if (var2.func_92089_a(var1) && var3 && (var1.isItemEnchantable() || var1.isItemEnchanted())) {
 	                	guiEnchantmentPlus.possibleEnchantments.add(var2); // modified by slash
 	                }

@@ -1,13 +1,17 @@
 package eplus.client;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import eplus.common.ContainerEnchanting;
 import eplus.common.EnchantingPlus;
 import eplus.common.EnchantmentItemData;
+import eplus.common.ItemPocketEnchanter;
 import eplus.common.localization.LocalizationHelper;
 import eplus.common.packet.PacketBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
@@ -25,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class GuiEnchantmentPlus extends GuiContainer {
 
     public ArrayList<GuiIcon> icons;
@@ -116,21 +121,13 @@ public class GuiEnchantmentPlus extends GuiContainer {
         }
         // slider adjust of each enchantment
         for (GuiEnchantmentItem item : enchantmentItems) {
-            if (item.yPos < guiTop + 16 || item.yPos > guiTop + 87) {
-                item.draw = false;
-            } else {
-                item.draw = true;
-            }
+            item.draw = !(item.yPos < guiTop + 16 || item.yPos > guiTop + 87);
             if (item.sliding) {
                 item.scroll(var4 - 39);
             }
         }
         for (GuiDisenchantmentItem item : disenchantmentItems) {
-            if (item.yPos < guiTop + 90 || item.yPos > guiTop + 143) {
-                item.draw = false;
-            } else {
-                item.draw = true;
-            }
+            item.draw = !(item.yPos < guiTop + 90 || item.yPos > guiTop + 143);
         }
         
         super.drawScreen(var1, var2, var3);
@@ -166,9 +163,8 @@ public class GuiEnchantmentPlus extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        int i = mc.renderEngine.getTexture("/eplus/enchant" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
-        mc.renderEngine.bindTexture(i);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.renderEngine.func_98187_b("/eplus/enchant" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
         GL11.glDisable(GL11.GL_LIGHTING);
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         this.drawTexturedModalRect(guiLeft + 180, guiTop + 16 + (int) (57 * eScroll), 0 + enchantmentItems.size() > 4 ? 0 : 12, 238, 12, 15);
@@ -310,7 +306,7 @@ public class GuiEnchantmentPlus extends GuiContainer {
 
     public boolean setStack(ItemStack var2)
     {
-        if (!getContainer().canSetStack(var2)) {
+        if (getContainer().canSetStack(var2)) {
             return false;
         }
         if (inventorySlots.getSlot(0).getStack() == null) {
@@ -420,19 +416,16 @@ public class GuiEnchantmentPlus extends GuiContainer {
     
     public boolean canPurchase(int var1)
     {
-    	int maxLevel = (int)((float)getContainer().bookshelves / (float)EnchantingPlus.maxBookShelves * 30F); // created by Slash
+        Minecraft client = FMLClientHandler.instance().getClient();
+        PlayerControllerMP playerController = client.playerController;
+        EntityClientPlayerMP thePlayer = client.thePlayer;
+
+        int maxLevel = (int)((float)getContainer().bookshelves / (float)EnchantingPlus.maxBookShelves * 30F); // created by Slash
     	if (getContainer().bookshelves>=EnchantingPlus.maxBookShelves) maxLevel = mc.thePlayer.experienceLevel; // created by Slash
-    	if (!EnchantingPlus.needBookShelves) maxLevel = var1 + 1; // created by Slash
+    	if (!EnchantingPlus.needBookShelves || thePlayer.inventory.getCurrentItem().getItem() instanceof ItemPocketEnchanter)
+            maxLevel = var1 + 1; // created by Slash
     	
-        if (mc.playerController.isInCreativeMode()) {
-            return true;
-        } else {
-            //return mc.thePlayer.experienceLevel >= var1 && var1 > 0; // modified by Slash
-        	if (mc.thePlayer.experienceLevel >= var1 && var1 > 0) {
-        		return var1 <= maxLevel;
-        	}
-        	return false;
-        }
+        return playerController.isInCreativeMode() || thePlayer.experienceLevel >= var1 && var1 > 0 && var1 <= maxLevel;
     }
 
     public ArrayList<EnchantmentItemData> readItem(ItemStack var1)

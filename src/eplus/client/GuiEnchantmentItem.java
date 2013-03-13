@@ -6,22 +6,23 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.enchantment.Enchantment;
 import org.lwjgl.opengl.GL11;
 
+@SuppressWarnings("ALL")
 public class GuiEnchantmentItem extends Gui
 {
     public static int  startingX;
     public static int  startingY;
 
-    public Enchantment type;
+    public final Enchantment type;
 
     public int         level;
-    public int         xPos;
+    public final int         xPos;
     public int         yPos;
-    public int         width;
-    public int         height;
+    public final int         width;
+    public final int         height;
 
     public boolean     draw;
     public boolean     enabled;
-    public boolean     isSlider;
+    public final boolean     isSlider;
     public boolean     sliding;
 
     public float       sliderScroll;
@@ -56,8 +57,7 @@ public class GuiEnchantmentItem extends Gui
         {
             sliderScroll = 0;
         }
-        int var4 = var1.renderEngine.getTexture("/eplus/icons" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
-        var1.renderEngine.bindTexture(var4);
+        var1.renderEngine.func_98187_b("/eplus/icons" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         byte var5 = 0;
         int var6 = 0x7E3517;

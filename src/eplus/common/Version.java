@@ -6,17 +6,18 @@ import net.minecraftforge.common.Property;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
 public class Version implements Runnable {
-    public static Version instance = new Version();
+    public static final Version instance = new Version();
 
-    public static final String VERSION = "1.12.9";
-    public static final String BUILD = "@BUILD_NUMBER@";
-    private static final String REMOTE_VERSION_FILE = "https://raw.github.com/odininon/EnchantingPlus/master/resources/version";//"https://raw.github.com/odininon/EnchantingPlus/1.4.6/resources/version";
+    private static final String REMOTE_VERSION_FILE = "https://dl.dropbox.com/u/21347544/eplus/version";//"https://raw.github.com/odininon/EnchantingPlus/1.4.6/resources/version";
+    private static final String REMOTE_CHANGELOG_FILE = "https://dl.dropbox.com/u/21347544/eplus/changelog/";
+
     public static EnumUpdateState currentVersion = EnumUpdateState.CURRENT;
 
     private static boolean updated;
@@ -43,13 +44,15 @@ public class Version implements Runnable {
         }
 
         Property property = EnchantingPlus.config.get("version","SeenVersion", currentModVersion);
-        String seenVersion = property.value;
+        String seenVersion = property.getString();
 
         if(recommendedVersion == null || recommendedVersion.equals(seenVersion))
             return false;
 
-        property.value = getRecommendedVersion();
-        EnchantingPlus.config.save();
+        property.set(getRecommendedVersion());
+        if(EnchantingPlus.config.hasChanged()) {
+            EnchantingPlus.config.save();
+        }
         return true;
     }
     public static String[] getChangelog(){
@@ -60,41 +63,54 @@ public class Version implements Runnable {
     }
 
     public static String[] grabChangelog(){
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(Version.class.getClassLoader().getResourceAsStream("changelog")));
+        InputStreamReader streamReader;
+        BufferedReader reader;
 
-            String line = null;
+        try {
+            URL url = new URL(REMOTE_CHANGELOG_FILE + recommendedVersion);
+            streamReader = new InputStreamReader(url.openStream());
+        }
+        catch (Exception ex ){
+            streamReader = new InputStreamReader(Version.class.getClassLoader().getResourceAsStream("changelog"));
+        }
+
+        reader = new BufferedReader(streamReader);
+
+        try {
+            String line;
             ArrayList<String> changelog = new ArrayList<String>();
             while((line = reader.readLine()) != null) {
                 changelog.add(line);
             }
-            return changelog.toArray(new String[0]);
-        } catch (Exception ex) {
-
+            return changelog.toArray(new String[changelog.size()]);
+        } catch (Exception ignored){
         }
+
         return new String[] {LocalizationHelper.getLocalString("version.fail.changelog")};
     }
 
     public static void versionCheck()
     {
-        Properties props = new Properties();
         try {
             URL url = new URL(REMOTE_VERSION_FILE);
 
             InputStreamReader inputStreamReader = new InputStreamReader(url.openStream());
+            BufferedReader reader = new BufferedReader(inputStreamReader);
 
-            if (inputStreamReader != null) {
-                props.load(inputStreamReader);
-                String major = props.getProperty("eplus.major.number");
-                String minor = props.getProperty("eplus.minor.number");
-                String build = props.getProperty("eplus.build.number");
-                recommendedVersion = major + "." + minor + "." + build;
+            String line;
+            while((line = reader.readLine()) != null) {
+                if (line.startsWith(getMinecraftVersion())){
+                    if(line.contains("eplus")){
+                        String[] strings = line.split(":");
+                        recommendedVersion = strings[2];
+                    }
+                }
             }
+
         } catch (Exception ex) {
             Game.log(Level.WARNING, "Unable to read from remote version authority.", new Object[0]);
             ex.printStackTrace();
             currentVersion = EnumUpdateState.CONNECTION_ERROR;
-            recommendedVersion = "0.0.0";
             return;
         }
 
@@ -102,7 +118,7 @@ public class Version implements Runnable {
             Game.log(Level.INFO, "Using the latest version for Minecraft " + getMinecraftVersion(), new Object[0]);
             currentVersion = EnumUpdateState.CURRENT;
             updated = false;
-        } else if (currentModVersion != null && ((Integer.parseInt(currentModVersion.substring(currentModVersion.lastIndexOf(".") + 1))) > (Integer.parseInt(recommendedVersion.substring(recommendedVersion.lastIndexOf(".") + 1))))) {
+        } else if (recommendedVersion == null || (currentModVersion != null  && ((Integer.parseInt(currentModVersion.substring(currentModVersion.lastIndexOf(".") + 1))) > (Integer.parseInt(recommendedVersion.substring(recommendedVersion.lastIndexOf(".") + 1)))))) {
             Game.log(Level.INFO, "Using the beta build {0}", new Object[] { currentModVersion });
             currentVersion = EnumUpdateState.BETA;
             updated = false;
@@ -111,7 +127,6 @@ public class Version implements Runnable {
             currentVersion = EnumUpdateState.OUTDATED;
             updated = true;
         }
-        props.clear();
     }
 
     public static String getMinecraftVersion()
@@ -136,15 +151,14 @@ public class Version implements Runnable {
     }
 
     public static void init(Properties versionProperties) {
-        Properties props = versionProperties;
-        if(props == null) {
+        if(versionProperties == null) {
             currentModVersion = "0.0.0";
             return;
         }
 
-        String major = props.getProperty("eplus.major.number");
-        String minor = props.getProperty("eplus.minor.number");
-        String build = props.getProperty("eplus.build.number");
+        String major = versionProperties.getProperty("eplus.major.number");
+        String minor = versionProperties.getProperty("eplus.minor.number");
+        String build = versionProperties.getProperty("eplus.build.number");
         currentModVersion = major + "." + minor + "." + build;
     }
 

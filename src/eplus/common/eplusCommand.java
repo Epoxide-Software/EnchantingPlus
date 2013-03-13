@@ -33,18 +33,18 @@ public class eplusCommand extends CommandBase {
             if (commandName.equalsIgnoreCase("texture")) {
                 processTexture(var1, args);
             } else if (commandName.equalsIgnoreCase("changelog")){
-                processChangelog(var1, args);
+                processChangelog(var1);
             } else {
-                throw new WrongUsageException("eplus [ texture | changelog ]", new Object[]{0});
+                throw new WrongUsageException("eplus [ texture | changelog ]", 0);
             }
         } else {
-            throw new WrongUsageException("eplus [ texture | changelog ]", new Object[]{0});
+            throw new WrongUsageException("eplus [ texture | changelog ]", 0);
         }
     }
 
-    private void processChangelog(ICommandSender var1, String[] args) {
+    private void processChangelog(ICommandSender var1) {
         var1.sendChatToPlayer("[EPLUS] Changelog:");
-        for(String line : Version.grabChangelog()){
+        for(String line : Version.getChangelog()){
             var1.sendChatToPlayer(line);
         }
     }
@@ -54,20 +54,23 @@ public class eplusCommand extends CommandBase {
             int value = Integer.valueOf(args[0]);
 
             if (value < 0) {
-                throw new WrongUsageException("eplus texture [ 0 | 1 | 2 ]", new Object[]{0});
+                throw new WrongUsageException("eplus texture [ 0 | 1 | 2 ]", 0);
             } else if (value > 2) {
-                throw new WrongUsageException("eplus texture [ 0 | 1 | 2 ]", new Object[]{0});
+                throw new WrongUsageException("eplus texture [ 0 | 1 | 2 ]", 0);
             }
 
             Property property = EnchantingPlus.config.get("general", "TextureIndex", 2);
-            property.value = String.valueOf(value);
-            EnchantingPlus.config.save();
+            property.set(value);
+
+            if(EnchantingPlus.config.hasChanged()){
+                EnchantingPlus.config.save();
+            }
             EnchantingPlus.textureIndex = value;
 
             var1.sendChatToPlayer("[EPLUS] changed texture to " + value);
 
         } else {
-            throw new WrongUsageException("eplus texture [ 0 | 1 | 2 ]", new Object[]{0});
+            throw new WrongUsageException("eplus texture [ 0 | 1 | 2 ]", 0);
         }
     }
 
@@ -76,10 +79,10 @@ public class eplusCommand extends CommandBase {
 
         switch (args.length) {
             case 1:
-                return getListOfStringsMatchingLastWord(args, new String[]{"texture", "changelog"});
+                return getListOfStringsMatchingLastWord(args, "texture", "changelog");
             case 2:
                 if (args[0].equalsIgnoreCase("texture")) {
-                    return getListOfStringsMatchingLastWord(args, new String[]{"0", "1", "2"});
+                    return getListOfStringsMatchingLastWord(args, "0", "1", "2");
                 }
             default:
                 return null;

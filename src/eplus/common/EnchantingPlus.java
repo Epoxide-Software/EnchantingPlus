@@ -1,5 +1,6 @@
 package eplus.common;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -8,14 +9,18 @@ import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.Mod.ServerStarting;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import eplus.common.localization.LocalizationHandler;
 import eplus.common.localization.LocalizationRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
@@ -24,6 +29,7 @@ import net.minecraftforge.common.Property;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 
+@SuppressWarnings("ALL")
 @Mod(modid = "eplus", name = "Enchanting Plus")
 @NetworkMod(channels = { "eplus" }, packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class)
 public class EnchantingPlus {
@@ -56,8 +62,8 @@ public class EnchantingPlus {
     public static double transferFactor;
     public static double repairFactor;
 
-    public static boolean pocketAllowDisenchanting;
-    public static boolean pocketAllowRepair;
+    public static boolean unbreakingAll;
+
     public static boolean pocketAllowTransfer;
 
     public static int pocketId;
@@ -69,6 +75,8 @@ public class EnchantingPlus {
     public static EnchantingPlus instance;
 
     public static Configuration config;
+
+    public static final EplusTab eplusTab = new EplusTab("eplus");
 
     @PreInit
     public void preInit(FMLPreInitializationEvent var1)
@@ -156,13 +164,19 @@ public class EnchantingPlus {
             allowDestroyItemOnDisenchantingProp.comment = "set to true if you want to allow destroy item on 100% disenchanting";
             allowDestroyItemOnDisenchanting = allowDestroyItemOnDisenchantingProp.getBoolean(false);
             
-            Property pocketIDProp = config.getItem("Items","PocketEnchanter", 152);
+            Property pocketIDProp = config.getItem("Items","PocketEnchanter", 3845);
             pocketId = pocketIDProp.getInt();
+
+            Property allowUnbreakingAll = config.get("general", "AllowUnbreakingall", false);
+            allowUnbreakingAll.comment = "set to true if you want to allow Unbreaking enchantment on all items";
+            unbreakingAll = allowUnbreakingAll.getBoolean(false);
 
         } catch (Exception e) {
             FMLLog.log(Level.SEVERE, e, "Enchanting Plus failed to load configurations.");
         } finally {
-            config.save();
+            if(config.hasChanged()){
+                config.save();
+            }
         }
 
         LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/pt_BR.xml");
@@ -193,6 +207,7 @@ public class EnchantingPlus {
         }
     }
 
+    @SuppressWarnings("UnnecessaryBoxing")
     @Init
     public void init(FMLInitializationEvent var1)
     {
@@ -201,11 +216,11 @@ public class EnchantingPlus {
         int var2 = Block.enchantmentTable.blockID;
         Block.blocksList[var2] = null;
         Item.itemsList[var2] = null;
-        Block table = new BlockEnchantingTable(var2).setHardness(5.0F).setResistance(2000.0F).setBlockName("enchantmentTable");
+        Block table = new BlockEnchantingTable(var2).setHardness(5.0F).setResistance(2000.0F).setUnlocalizedName("enchantmentTable");
         GameRegistry.registerBlock(table, "enchantmentTable");
 
         if(allowPocketEnchanting) {
-            Item pocketEnchanter = new ItemPocketEnchanter(pocketId).setItemName("pocketEnchanter");
+            Item pocketEnchanter = new ItemPocketEnchanter(pocketId).setUnlocalizedName("pocketEnchanter");
             GameRegistry.registerItem(pocketEnchanter, "pocketEnchanter");
 
             GameRegistry.addRecipe(new ItemStack(pocketEnchanter), "GEG"," B ", " B ", Character.valueOf('G'), Item.ghastTear, Character.valueOf('E'), Block.enchantmentTable, Character.valueOf('B'), Item.blazeRod);
