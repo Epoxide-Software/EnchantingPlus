@@ -66,6 +66,7 @@ public class EnchantingPlus {
     public static boolean unbreakingAll;
     public static boolean guiStartedByPocket; // created by Slash
     public static boolean unblockedTable; // created by Slash
+    public static boolean needsResources;
 
     public static int pocketId;
     
@@ -78,6 +79,7 @@ public class EnchantingPlus {
     public static Configuration config;
 
     public static final EplusTab eplusTab = new EplusTab("eplus");
+
 
     @PreInit
     public void preInit(FMLPreInitializationEvent var1)
@@ -176,6 +178,8 @@ public class EnchantingPlus {
             needToUnlockFirstProp.comment = "set to true if you want to unlock the use of EnchantmentTable before start using";
             needToUnlockFirst = needToUnlockFirstProp.getBoolean(true);
 
+            this.needsResources = config.get("general", "needsResources", true, "Set to false if you dont want addition resources to use the table").getBoolean(true);
+
         } catch (Exception e) {
             FMLLog.log(Level.SEVERE, e, "Enchanting Plus failed to load configurations.");
         } finally {
@@ -184,9 +188,13 @@ public class EnchantingPlus {
             }
         }
 
+        LocalizationRegistry.Instance().addAllLocaliztionFiles();
+
+        /*
         LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/it_IT.xml");
         LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/pt_BR.xml");
         LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/en_US.xml");
+        */
         LocalizationHandler.addLanguages();
 
         Version.init(var1.getVersionProperties());
