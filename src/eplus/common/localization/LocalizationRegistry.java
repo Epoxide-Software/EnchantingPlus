@@ -1,17 +1,21 @@
 package eplus.common.localization;
 
-import java.io.File;
-import java.io.IOException;
+import eplus.common.EnchantingPlus;
+import eplus.common.Game;
+
+import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.logging.Level;
 
 /**
  * Used to register new localizations for the mod
- * 
+ *
  * @author odininon
- * 
+ *
  */
 public class LocalizationRegistry {
 
@@ -26,7 +30,7 @@ public class LocalizationRegistry {
 	private final ArrayList<String> LocalizationFiles = new ArrayList<String>();
 
 	/**
-	 * 
+	 *
 	 * @return The Singleton instance of LocalizationRegistry
 	 */
 	public static LocalizationRegistry Instance()
@@ -36,7 +40,7 @@ public class LocalizationRegistry {
 
 	/**
 	 * Used to add localization file to the registry
-	 * 
+	 *
 	 * @param file
 	 *            path to the localization file to be loaded
 	 */
@@ -46,7 +50,7 @@ public class LocalizationRegistry {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return A list of localization files to be loaded
 	 */
 	public ArrayList<String> getLocalizations()
@@ -57,40 +61,19 @@ public class LocalizationRegistry {
 	private LocalizationRegistry() {
 	}
 
-    public void addAllLocaliztionFiles() {
+    public void addAllLocaliztionFiles() throws IOException {
 
-        Enumeration<URL> resources = null;
-        try {
-            resources = this.getClass().getClassLoader().getResources("eplus/lang/");
-        } catch (IOException e) {
-            e.printStackTrace();
+        InputStream resources = null;
+
+        resources = Thread.currentThread().getContextClassLoader().getResourceAsStream("eplus/lang/");
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(resources));
+
+        String line;
+        while((line = reader.readLine()) != null) {
+            LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/" + line);
+            Game.log(Level.INFO, "Loaded Localization: {0}", new Object[] {line});
         }
-
-        if (resources == null) return;
-
-        if (resources.hasMoreElements()) {
-            URL url = resources.nextElement();
-            File dir = null;
-
-            try {
-                dir = new File(url.toURI());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-
-            if (dir == null) return;
-
-            String[] list = dir.list();
-
-            System.out.println(list.toString());
-
-            for(String file : list)
-            {
-                addLocalizationFile("/eplus/lang/" + file);
-            }
-
-        }
-
 
     }
 }

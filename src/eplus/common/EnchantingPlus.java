@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 
@@ -188,7 +189,11 @@ public class EnchantingPlus {
             }
         }
 
-        LocalizationRegistry.Instance().addAllLocaliztionFiles();
+        try {
+            LocalizationRegistry.Instance().addAllLocaliztionFiles();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         /*
         LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/it_IT.xml");
