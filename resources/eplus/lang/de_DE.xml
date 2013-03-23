@@ -4,6 +4,7 @@
     <comment>Deutsche Sprachdatei</comment>
     <entry key="item.pocketEnchanter.name">Taschenverzauberer</entry>
     <entry key="pocketEnchanter.info">Unterwegs Gegenstände verzaubern.</entry>
+    <entry key="pocketEnchanter.unlock">Du musst diesen Gegenstand erst freischalten!</entry>
     <entry key="version.fail.changelog">Changelog konnte nicht geladen werden.</entry>
     <entry key="version.update.available">Eine aktualisierte Version ist verfügbar.</entry>
     <entry key="version.beta.build">Du benutzt die Beta-Version @MOD_VERSION@. Bitte melde alle Probleme im Forum.</entry>
@@ -13,6 +14,7 @@
     <entry key="gui.canuse">Verfügbar</entry>
     <entry key="gui.cost">Kosten</entry>
     <entry key="gui.bookshelves">Bücherregale</entry>
+     <entry key="gui.bookshelves.dontneed">Keine Bücherregale benötigt</entry>
     <entry key="gui.playerlevel">Erfahrungslevel</entry>
     <entry key="gui.icon.enchant">Verzaubern</entry>
     <entry key="gui.icon.enchant.description">Verzauberung hinzufügen</entry>
