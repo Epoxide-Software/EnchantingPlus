@@ -95,8 +95,8 @@
         <copy todir="${mcpsrc.dir}/minecraft">
             <fileset dir="${src.dir}"/>
             <filterset>
-                <filter token="VERSION" value="${project.version.full}" />
-                <filter token="BUILD_NUMBER" value="${build.number}" />
+                <filter token="VERSION" value="${project.version.full}"/>
+                <filter token="BUILD_NUMBER" value="${build.number}"/>
             </filterset>
         </copy>
 
@@ -132,8 +132,11 @@
 
         <!-- Copy resources -->
         <copy todir="${classes.dir}">
-            <fileset dir="${resources.dir}">
-            </fileset>
+            <fileset dir="${resources.dir}"/>
+            <filterset>
+                <filter token="VERSION" value="${project.version.full}"/>
+                <filter token="BUILD_NUMBER" value="${build.number}"/>
+            </filterset>
         </copy>
 
         <!-- Reset src dir to post-forge-install state -->
@@ -146,7 +149,8 @@
 
         <delete dir="${jar.dir}"/>
         <mkdir dir="${jar.dir}"/>
-        <jar destfile="${jar.dir}/${ant.project.name}-${mc.version}-${project.version.full}.jar" basedir="${classes.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}-${mc.version}-${project.version.full}.jar"
+             basedir="${classes.dir}"/>
 
     </target>
 
