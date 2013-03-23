@@ -168,7 +168,7 @@ public class GuiEnchantmentPlus extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.func_98187_b("/eplus/enchant" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
+        mc.renderEngine.bindTexture("/eplus/enchant" + EnchantingPlus.getTranslatedTextureIndex() + ".png");
         GL11.glDisable(GL11.GL_LIGHTING);
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         this.drawTexturedModalRect(guiLeft + 180, guiTop + 16 + (int) (57 * eScroll), 0 + enchantmentItems.size() > 4 ? 0 : 12, 238, 12, 15);
@@ -451,6 +451,13 @@ public class GuiEnchantmentPlus extends GuiContainer {
             if (slot2.itemID == Item.emerald.itemID) itemToDisenchant = true;
             if (slot2.itemID == Item.diamond.itemID) itemToRepair = true;
             if (slot2.itemID == Item.ghastTear.itemID) itemToTransfer = true;
+        } else {
+            if (!EnchantingPlus.needsResources){
+                 itemToEnchant = true;
+                 itemToDisenchant = true;
+                 itemToRepair = true;
+                 itemToTransfer = true;
+            }
         }
 
         if (Type == "Enchant" & !itemToEnchant) return false;

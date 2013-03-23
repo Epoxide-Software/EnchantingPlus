@@ -50,9 +50,11 @@ public class ItemPocketEnchanter extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(IconRegister par1IconRegister) {
-        this.iconIndex = par1IconRegister.func_94245_a("eplus:pocketenchanter");
+    public void updateIcons(IconRegister par1IconRegister) {
+        this.iconIndex = par1IconRegister.registerIcon("eplus:pocketenchanter");
     }
+
+
 
     @SideOnly(Side.CLIENT) // created by Slash
     @Override
