@@ -175,9 +175,9 @@ public class EnchantingPlus {
             allowUnbreakingAll.comment = "set to true if you want to allow Unbreaking enchantment on all items";
             unbreakingAll = allowUnbreakingAll.getBoolean(false);
 
-            Property needToUnlockFirstProp = config.get("general", "needToUnlockFirst", true); // created by Slash
+            Property needToUnlockFirstProp = config.get("general", "needToUnlockFirst", false); // created by Slash
             needToUnlockFirstProp.comment = "set to true if you want to unlock the use of EnchantmentTable before start using";
-            needToUnlockFirst = needToUnlockFirstProp.getBoolean(true);
+            needToUnlockFirst = needToUnlockFirstProp.getBoolean(false);
 
             this.needsResources = config.get("general", "needsResources", true, "Set to false if you dont want addition resources to use the table").getBoolean(true);
 
