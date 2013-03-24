@@ -47,6 +47,7 @@ public class LocalizationRegistry {
 	public void addLocalizationFile(String file)
 	{
 		LocalizationFiles.add(file);
+        Game.log(Level.INFO, "Loaded Localization: {0}", new Object[] {file});
 	}
 
 	/**
@@ -61,18 +62,31 @@ public class LocalizationRegistry {
 	private LocalizationRegistry() {
 	}
 
-    public void addAllLocaliztionFiles() throws IOException {
+    public void addAllLocaliztionFiles() {
+        Game.log(Level.INFO, "Loading Localizations", new Object[]{});
 
-        InputStream resources = null;
+        URL resources = null;
 
-        resources = Thread.currentThread().getContextClassLoader().getResourceAsStream("eplus/lang/");
+        resources = this.getClass().getResource("/eplus/lang/languages.txt");
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resources));
+        InputStream inputStream = null;
+        try {
+            inputStream = resources.openStream();
+        } catch (Exception e) {
+            Game.log(Level.INFO, "Error opening file", new Object[]{});
+            e.printStackTrace();
+            return;
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String line;
-        while((line = reader.readLine()) != null) {
-            LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/" + line);
-            Game.log(Level.INFO, "Loaded Localization: {0}", new Object[] {line});
+        try {
+            while((line = reader.readLine()) != null) {
+                LocalizationRegistry.Instance().addLocalizationFile("/eplus/lang/" + line);
+            }
+        } catch (Exception e) {
+            Game.log(Level.INFO, "Error Reading Line", new Object[]{});
+            e.printStackTrace();
         }
 
     }

@@ -126,13 +126,27 @@
         </exec>
 
         <!-- Copy classes -->
-        <copy todir="${classes.dir}">
-            <fileset dir="${mcp.dir}/reobf/minecraft"/>
+        <copy todir="${classes.dir}/eplus">
+            <fileset dir="${mcp.dir}/reobf/minecraft/eplus"/>
         </copy>
+
+        <exec dir="." executable="python">
+            <arg value="update_languages.py"/>
+        </exec>
 
         <!-- Copy resources -->
         <copy todir="${classes.dir}">
-            <fileset dir="${resources.dir}"/>
+            <fileset dir="${resources.dir}">
+                <exclude name="mcmod.info"/>
+                <exclude name="version.properties"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${classes.dir}">
+            <fileset dir="${resources.dir}">
+                <include name="mcmod.info"/>
+                <include name="version.properties"/>
+            </fileset>
             <filterset>
                 <filter token="VERSION" value="${project.version.full}"/>
                 <filter token="BUILD_NUMBER" value="${build.number}"/>
