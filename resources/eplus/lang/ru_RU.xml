@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties version="1.0">
+    <comment>Russian (RU) localization file</comment>
+    <entry key="item.pocketEnchanter.name">Карманный зачаровыватель</entry>
+    <entry key="pocketEnchanter.info">Зачаровывание на ходу.</entry>
+    <entry key="pocketEnchanter.unlock">Сначала вы должны разблокировать этот предмет!</entry>
+    <entry key="version.fail.changelog">сбой загрузки изменений</entry>
+    <entry key="version.update.available">Обновлённая версия доступна</entry>
+    <entry key="version.beta.build">Использование бета билда @MOD_VERSION@, пожалуйста сообщайте обо всех ошибках на форумах.</entry>
+    <entry key="version.changelog.command">Пожалуйста, используйте следующие команды, чтобы увидеть изменения</entry>
+    <entry key="positive">Да</entry>
+    <entry key="negative">Нет</entry>
+    <entry key="gui.canuse">Можно использовать</entry>
+    <entry key="gui.cost">Стоимость</entry>
+    <entry key="gui.bookshelves">Книжные полки</entry>
+    <entry key="gui.bookshelves.dontneed">Книжные полки не нужны</entry>
+    <entry key="gui.playerlevel">Player XP уровень</entry>
+    <entry key="gui.icon.enchant">Чары</entry>
+    <entry key="gui.icon.enchant.description">Добавить чары</entry>
+    <entry key="gui.icon.disenchant">Освободить от чар</entry>
+    <entry key="gui.icon.disenchant.description">Удалить чары</entry>
+    <entry key="gui.icon.bookshelves">Книжные полки</entry>
+    <entry key="gui.icon.bookshelves.description">Число книжных полок, вокруг стола зачарований</entry>
+    <entry key="gui.icon.repair">Починить</entry>
+    <entry key="gui.icon.repair.description">Починть повреждённый зачарованный предмет</entry>
+    <entry key="gui.icon.transfer">Перенести</entry>
+    <entry key="gui.icon.transfer.description">Перенести чары с предметов</entry>
+    <entry key="itemGroup.eplus">Enchanting Plus</entry>
+</properties>
