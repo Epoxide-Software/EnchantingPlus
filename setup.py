@@ -73,7 +73,7 @@ def fix_patch(in_file, out_file, find=None, rep=None):
     file = 'not found'
     with open(in_file, 'rb') as inpatch:
         with open(tmp_file, 'wb') as outpatch:
-            for line in inpatch:
+            for line in inpatch:               
                 line = line.rstrip('\r\n')
                 if line[:3] in ['+++', '---', 'Onl', 'dif']:
                     if not find == None and not rep == None:
@@ -84,8 +84,7 @@ def fix_patch(in_file, out_file, find=None, rep=None):
                 else:
                     outpatch.write(line + os.linesep)
                 if line[:3] == '---':
-                    file = line[line.find(os.sep, line.find(os.sep)+1)+1:]
-                    
+                    file = line[line.find(os.sep, line.find(os.sep)+1)+1:]    
     if out_file is None:
         shutil.move(tmp_file, in_file)
     return file

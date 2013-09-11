@@ -1,0 +1,19 @@
+--- ../src_work6/eplus/gui/GuiModTable.java
++++ ../src_work7/eplus/gui/GuiModTable.java
+@@ -12,7 +12,6 @@
+ import net.minecraft.enchantment.Enchantment;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.entity.player.InventoryPlayer;
+-import net.minecraft.util.ResourceLocation;
+ import net.minecraft.world.World;
+ 
+ import org.lwjgl.input.Mouse;
+@@ -279,7 +278,7 @@
+ 
+     private boolean dirty = false;
+ 
+-    private final ResourceLocation texture = new ResourceLocation("eplus", "textures/gui/enchant.png");
++    private final String texture = "/assets/eplus/textures/gui/enchant.png";
+ 
+     public String error = "";
+ 

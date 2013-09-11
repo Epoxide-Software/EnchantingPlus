@@ -1,0 +1,28 @@
+--- ../src_work6/eplus/handlers/VersionTickHandler.java
++++ ../src_work7/eplus/handlers/VersionTickHandler.java
+@@ -3,7 +3,6 @@
+ import java.util.EnumSet;
+ 
+ import net.minecraft.entity.player.EntityPlayer;
+-import net.minecraft.util.ChatMessageComponent;
+ import cpw.mods.fml.common.IScheduledTickHandler;
+ import cpw.mods.fml.common.TickType;
+ import eplus.lib.References;
+@@ -61,15 +60,10 @@
+         {
+             if (Version.hasUpdated())
+             {
+-                sendChatToPlayer(player, String.format("[%s]: %s: %s", References.MODID, "Version update is available", Version.getRecommendedVersion()));
+-                sendChatToPlayer(player, String.format("[%s]: to view a changelog use: %s", References.MODID, "/eplus changelog"));
++                player.sendChatToPlayer(String.format("[%s]: %s: %s", References.MODID, "Version update is available", Version.getRecommendedVersion()));
++                player.sendChatToPlayer(String.format("[%s]: to view a changelog use: %s", References.MODID, "/eplus changelog"));
+             }
+         }
+         messageSent = true;
+     }
+-
+-    private void sendChatToPlayer(EntityPlayer player, String format)
+-    {
+-        player.sendChatToPlayer(ChatMessageComponent.createFromText(format));
+-    }
+ }

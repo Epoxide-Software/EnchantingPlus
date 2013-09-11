@@ -160,7 +160,7 @@ public class EplusApi {
 			if (Item.class.isAssignableFrom(item.getClass())) {
 				itemId = ((Item) item).itemID;
 			} else if (Integer.class.isAssignableFrom(item.getClass())) {
-				itemId = (int) item;
+				itemId = (Integer) item;
 			}
 
 			NBTTagCompound tagCompound1 = new NBTTagCompound();

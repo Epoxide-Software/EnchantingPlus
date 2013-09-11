@@ -1,0 +1,56 @@
+--- ../src_work6/eplus/EnchantingPlus.java
++++ ../src_work7/eplus/EnchantingPlus.java
+@@ -44,7 +44,7 @@
+  * @license Lesser GNU Public License v3 (http://www.gnu.org/licenses/lgpl.html)
+  */
+ 
+-@Mod(name = References.MODNAME, modid = References.MODID, dependencies = "required-after:Forge@[7.10.0.789,)", acceptedMinecraftVersions = "[1.6.2, )")
++@Mod(name = References.MODNAME, modid = References.MODID, dependencies = "required-after:Forge@[7.8.0.684, 7.8.1.738]", acceptedMinecraftVersions = "[1.5.2, 1.6.1)")
+ @NetworkMod(channels =
+ { BasePacket.CHANNEL }, packetHandler = PacketHandler.class, connectionHandler = ConnectionHandler.class, clientSideRequired = true)
+ public class EnchantingPlus
+@@ -60,7 +60,7 @@
+     public static CommonProxy proxy;
+     public static Map<Integer, String> itemMap = new HashMap<Integer, String>();
+ 
+-    @Mod.EventHandler
++    @Mod.Init
+     public void init(FMLInitializationEvent event)
+     {
+ 
+@@ -71,7 +71,7 @@
+         proxy.registerTickHandlers();
+     }
+ 
+-    @Mod.EventHandler
++    @Mod.PostInit
+     public void postInit(FMLPostInitializationEvent event)
+     {
+         final NBTTagList list = new NBTTagList();
+@@ -87,7 +87,7 @@
+         proxy.registerEnchantments();
+     }
+ 
+-    @Mod.EventHandler
++    @Mod.PreInit
+     public void preInit(FMLPreInitializationEvent event)
+     {
+         log = event.getModLog();
+@@ -114,7 +114,7 @@
+         Items.init();
+     }
+ 
+-    @Mod.EventHandler
++    @Mod.IMCCallback
+     public void processIMC(FMLInterModComms.IMCEvent event)
+     {
+ 
+@@ -220,7 +220,7 @@
+         GameRegistry.registerTileEntity(tileEntity, References.MODID + ":" + tileEntity.getSimpleName());
+     }
+ 
+-    @Mod.EventHandler
++    @Mod.ServerStarting
+     public void serverStarting(FMLServerStartingEvent event)
+     {
+         event.registerServerCommand(new EplusCommands());

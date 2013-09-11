@@ -1,0 +1,11 @@
+--- ../src_work6/eplus/helper/EnchantHelper.java
++++ ../src_work7/eplus/helper/EnchantHelper.java
+@@ -54,7 +54,7 @@
+             flag = !itemStack.getTagCompound().hasKey("charge");
+         }
+         
+-        return itemStack.itemID == Item.book.itemID || itemStack.isItemEnchantable() && flag;
++        return itemStack.getItem().getItemEnchantability() > 0 && (itemStack.itemID == Item.book.itemID || itemStack.isItemEnchantable() && flag);
+     }
+ 
+     /**
