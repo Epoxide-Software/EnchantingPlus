@@ -26,7 +26,7 @@
     <entry key="description.enchantment.unbreaking">Увеличивает прочность</entry>
     <entry key="description.enchantment.knockBack">Увеличивает отбрасывание мобов и игроков</entry>
     <entry key="description.enchantment.efficiency">Быстрый сбор ресурсов, когда используется</entry>
-    <entry key="description.enchantment.protection.fire">Защита от огня; пожар тушится быстрее</entry>
+    <entry key="description.enchantment.protection.fire">Защита от огня; огонь тушится быстрее</entry>
     <entry key="description.enchantment.flame">Огненные стрелы</entry>
     <entry key="error.no.description">ПОЖАЛУЙСТА СООБЩИТЕ ОБ ЭТОМ: Пожалуйста, добавьте:</entry>
 </properties>
