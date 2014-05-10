@@ -96,7 +96,7 @@ public class ConfigurationHandler
     {
         try
         {
-            Class<?> clazz = Class.forName("eplus.lib.ConfigurationSettings");
+            Class<?> clazz = Class.forName("com.aesireanempire.eplus.lib.ConfigurationSettings");
             Field field = clazz.getDeclaredField(setting);
 
             int value = field.getInt(null);
