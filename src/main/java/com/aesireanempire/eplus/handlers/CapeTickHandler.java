@@ -46,7 +46,7 @@ public class CapeTickHandler
         }
         catch (final Exception ex)
         {
-            EnchantingPlus.log.warn("Could not load capes from remote authority.");
+            EnchantingPlus.log.warning("Could not load capes from remote authority.");
         }
     }
 

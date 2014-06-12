@@ -20,10 +20,9 @@ public class SlotEnchantTable extends InventoryBasic
         container = containerEnchantTable;
     }
 
-    @Override
-    public void markDirty()
+    @Override public void onInventoryChanged()
     {
-        super.markDirty();
+        super.onInventoryChanged();
         container.onCraftMatrixChanged(this);
     }
 }

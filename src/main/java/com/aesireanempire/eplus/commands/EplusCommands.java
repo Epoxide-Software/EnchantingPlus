@@ -5,10 +5,11 @@ import com.aesireanempire.eplus.handlers.ConfigurationHandler;
 import com.aesireanempire.eplus.handlers.Version;
 import com.aesireanempire.eplus.helper.StringHelper;
 import com.aesireanempire.eplus.lib.References;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatMessageComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,7 +86,7 @@ public class EplusCommands extends CommandBase
 
     public void sendChatToPlayer(ICommandSender player, String message)
     {
-        player.addChatMessage(new ChatComponentText(message));
+        player.sendChatToPlayer(ChatMessageComponent.createFromText(message));
     }
 
     @Override
@@ -138,5 +139,10 @@ public class EplusCommands extends CommandBase
             }
         }
         throw new WrongUsageException("eplus " + commandName + " " + StringHelper.listToString(CommandRegister.commands.get(commandName)));
+    }
+
+    @Override public int compareTo(Object o)
+    {
+        return 0;
     }
 }

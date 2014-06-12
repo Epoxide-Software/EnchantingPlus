@@ -1,14 +1,17 @@
 package com.aesireanempire.eplus.network.packets;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import com.aesireanempire.eplus.EnchantingPlus;
 import com.aesireanempire.eplus.inventory.ContainerEnchantTable;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Created by freyja
  */
-public class RepairPacket implements IPacket
+public class RepairPacket extends BasePacket
 {
     protected int totalCost;
     protected int repairAmount;
@@ -24,13 +27,13 @@ public class RepairPacket implements IPacket
         this.repairAmount = repairAmount;
     }
 
-    @Override public void readBytes(ByteBuf bytes)
+    @Override public void readBytes(ByteArrayDataInput bytes)
     {
         totalCost = bytes.readInt();
         repairAmount = bytes.readInt();
     }
 
-    @Override public void writeBytes(ByteBuf bytes)
+    @Override public void writeBytes(ByteArrayDataOutput bytes)
     {
         bytes.writeInt(totalCost);
         bytes.writeInt(repairAmount);

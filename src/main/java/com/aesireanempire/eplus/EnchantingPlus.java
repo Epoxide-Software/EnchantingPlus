@@ -11,8 +11,8 @@ import com.aesireanempire.eplus.items.Items;
 import com.aesireanempire.eplus.lib.EnchantmentHelp;
 import com.aesireanempire.eplus.lib.References;
 import com.aesireanempire.eplus.network.GuiHandler;
+import com.aesireanempire.eplus.network.packets.BasePacket;
 import com.aesireanempire.eplus.network.packets.ChannelHandler;
-import com.aesireanempire.eplus.network.packets.IPacket;
 import com.aesireanempire.eplus.network.proxies.CommonProxy;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +21,21 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -46,37 +58,31 @@ import cpw.mods.fml.relauncher.Side;
  */
 
 @Mod(name = References.MODNAME, modid = References.MODID)
-
+@NetworkMod(channels = {References.MODID}, clientSideRequired = true, packetHandler = ChannelHandler.class)
 public class EnchantingPlus
 {
 
     public static final boolean Debug = Boolean.parseBoolean(System.getenv("DEBUG"));
     @Mod.Instance(References.MODID)
     public static EnchantingPlus INSTANCE;
-    public static org.apache.logging.log4j.Logger log;
+    public static Logger log;
     @SidedProxy(clientSide = "com.aesireanempire.eplus.network.proxies.ClientProxy", serverSide = "com.aesireanempire.eplus.network.proxies.CommonProxy")
     public static CommonProxy proxy;
     public static Map<Integer, String> itemMap = new HashMap<Integer, String>();
 
-    private static EnumMap<Side, FMLEmbeddedChannel> channels;
-
-    public static void sendPacketToServer(IPacket packet)
+    public static void sendPacketToServer(BasePacket packet)
     {
-        channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-        channels.get(Side.CLIENT).writeOutbound(packet);
+        PacketDispatcher.sendPacketToServer(packet.makePacket());
     }
 
-    public static void sendPacketToPlayer(IPacket packet, EntityPlayer player)
+    public static void sendPacketToPlayer(BasePacket packet, EntityPlayer player)
     {
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-        channels.get(Side.SERVER).writeOutbound(packet);
+        PacketDispatcher.sendPacketToPlayer(packet.makePacket(), (cpw.mods.fml.common.network.Player) player);
     }
 
-    public static void sendPacketToAllClients(IPacket packet)
+    public static void sendPacketToAllClients(BasePacket packet)
     {
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-        channels.get(Side.SERVER).writeOutbound(packet);
+        PacketDispatcher.sendPacketToAllPlayers(packet.makePacket());
     }
 
     @Mod.EventHandler
@@ -84,10 +90,8 @@ public class EnchantingPlus
     {
 
         registerTileEntity(TileEnchantTable.class);
-        NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new GuiHandler());
+        NetworkRegistry.instance().registerGuiHandler(INSTANCE, new GuiHandler());
         MinecraftForge.EVENT_BUS.register(new Events());
-
-        channels = NetworkRegistry.INSTANCE.newChannel(References.MODID, new ChannelHandler());
 
         proxy.registerTickHandlers();
     }
@@ -139,11 +143,11 @@ public class EnchantingPlus
                 else if (imcMessage.isNBTMessage())
                 {
                     final NBTTagCompound nbtValue = imcMessage.getNBTValue();
-                    final NBTTagList enchantments = nbtValue.getTagList("Enchantments", 10);
+                    final NBTTagList enchantments = nbtValue.getTagList("Enchantments");
 
                     for (int i = 0; i < enchantments.tagCount(); i++)
                     {
-                        final NBTTagCompound nbtBase = enchantments.getCompoundTagAt(i);
+                        final NBTTagCompound nbtBase = (NBTTagCompound) enchantments.tagAt(i);
                         final String name = nbtBase.getString("Name");
                         final String description = nbtBase.getString("Description");
                         if (EnchantmentHelp.putToolTips(name, description))
@@ -154,7 +158,7 @@ public class EnchantingPlus
                 }
                 else
                 {
-                    EnchantingPlus.log.warn(String.format("Invalid IMC Message from %s", imcMessage.getSender()));
+                    EnchantingPlus.log.warning(String.format("Invalid IMC Message from %s", imcMessage.getSender()));
                 }
             }
             else if (imcMessage.key.equalsIgnoreCase("blacklist-enchantment"))
@@ -170,11 +174,11 @@ public class EnchantingPlus
                 else if (imcMessage.isNBTMessage())
                 {
                     final NBTTagCompound nbtValue = imcMessage.getNBTValue();
-                    final NBTTagList enchantments = nbtValue.getTagList("Enchantments", 10);
+                    final NBTTagList enchantments = nbtValue.getTagList("Enchantments");
 
                     for (int i = 0; i < enchantments.tagCount(); i++)
                     {
-                        final NBTTagCompound nbtBase = enchantments.getCompoundTagAt(i);
+                        final NBTTagCompound nbtBase = (NBTTagCompound) enchantments.tagAt(i);
                         final String name = nbtBase.getString("Name");
                         if (EnchantmentHelp.putBlackList(name))
                         {
@@ -184,7 +188,7 @@ public class EnchantingPlus
                 }
                 else
                 {
-                    EnchantingPlus.log.warn(String.format("Invalid IMC Message from %s", imcMessage.getSender()));
+                    EnchantingPlus.log.warning(String.format("Invalid IMC Message from %s", imcMessage.getSender()));
                 }
             }
             else if (imcMessage.key.equalsIgnoreCase("blacklist-item"))
@@ -200,11 +204,11 @@ public class EnchantingPlus
                 else if (imcMessage.isNBTMessage())
                 {
                     final NBTTagCompound nbtValue = imcMessage.getNBTValue();
-                    final NBTTagList enchantments = nbtValue.getTagList("items", 10);
+                    final NBTTagList enchantments = nbtValue.getTagList("items");
 
                     for (int i = 0; i < enchantments.tagCount(); i++)
                     {
-                        final NBTTagCompound nbtBase = enchantments.getCompoundTagAt(i);
+                        final NBTTagCompound nbtBase = (NBTTagCompound) enchantments.tagAt(i);
                         final Integer itemId = Integer.valueOf(nbtBase.getString("itemId"));
                         if (EnchantmentHelp.putBlackListItem(itemId))
                         {
@@ -214,7 +218,7 @@ public class EnchantingPlus
                 }
                 else
                 {
-                    EnchantingPlus.log.warn(String.format("Invalid IMC Message from %s", imcMessage.getSender()));
+                    EnchantingPlus.log.warning(String.format("Invalid IMC Message from %s", imcMessage.getSender()));
                 }
             }
         }

@@ -1,15 +1,20 @@
 package com.aesireanempire.eplus.network.packets;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import com.aesireanempire.eplus.EnchantingPlus;
 import com.aesireanempire.eplus.lib.ConfigurationSettings;
 import com.aesireanempire.eplus.lib.GuiIds;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
+
+import java.nio.ByteBuffer;
 
 /**
  * Created by freyja
  */
-public class GuiPacket implements IPacket
+public class GuiPacket extends BasePacket
 {
     private int guiId;
     private int xPos;
@@ -31,20 +36,21 @@ public class GuiPacket implements IPacket
         this.zPos = zPos;
     }
 
-    @Override public void readBytes(ByteBuf bytes)
+    @Override public void readBytes(ByteArrayDataInput bytes)
     {
         int length = bytes.readInt();
-        username = bytes.readBytes(length).toString();
+        username = bytes.readUTF();
         guiId = bytes.readInt();
         xPos = bytes.readInt();
         yPos = bytes.readInt();
         zPos = bytes.readInt();
     }
 
-    @Override public void writeBytes(ByteBuf bytes)
+    @Override public void writeBytes(ByteArrayDataOutput bytes)
     {
         bytes.writeInt(username.length());
-        bytes.writeBytes(username.getBytes());
+        bytes.writeUTF(username);
+
         bytes.writeInt(guiId);
         bytes.writeInt(xPos);
         bytes.writeInt(yPos);

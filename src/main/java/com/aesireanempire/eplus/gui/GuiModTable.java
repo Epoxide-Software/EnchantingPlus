@@ -5,11 +5,17 @@ import com.aesireanempire.eplus.helper.EnchantHelper;
 import com.aesireanempire.eplus.helper.MathHelper;
 import com.aesireanempire.eplus.inventory.ContainerEnchantTable;
 import com.aesireanempire.eplus.inventory.TileEnchantTable;
-import com.aesireanempire.eplus.lib.*;
+import com.aesireanempire.eplus.lib.ConfigurationSettings;
+import com.aesireanempire.eplus.lib.EnchantmentHelp;
+import com.aesireanempire.eplus.lib.FontFormat;
+import com.aesireanempire.eplus.lib.GuiIds;
+import com.aesireanempire.eplus.lib.References;
+import com.aesireanempire.eplus.lib.Strings;
 import com.aesireanempire.eplus.network.packets.EnchantPacket;
 import com.aesireanempire.eplus.network.packets.GuiPacket;
 import com.aesireanempire.eplus.network.packets.RepairPacket;
 import com.aesireanempire.eplus.network.packets.UnlockPacket;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -17,9 +23,10 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -266,36 +273,36 @@ public class GuiModTable extends GuiContainer
         }
         if (EnchantingPlus.Debug)
         {
-            fontRendererObj.drawString(String.format("%s: %s", "Error", error), 5, 5, 0xffaabbaa);
+            fontRenderer.drawString(String.format("%s: %s", "Error", error), 5, 5, 0xffaabbaa);
         }
         final int maxWidth = guiLeft - 20;
         final List<List<String>> information = new ArrayList<List<String>>();
-        information.add(fontRendererObj.listFormattedStringToWidth(String.format("%s: %s", Strings.playerLevel, player.experienceLevel), maxWidth));
+        information.add(fontRenderer.listFormattedStringToWidth(String.format("%s: %s", Strings.playerLevel, player.experienceLevel), maxWidth));
 
         if (container.tableInventory.getStackInSlot(0) == null || levelChanged() || !levelChanged() && !container.tableInventory.getStackInSlot(0).isItemDamaged())
         {
-            information.add(fontRendererObj.listFormattedStringToWidth(String.format("%s: %s", Strings.enchantingCost, totalCost), maxWidth));
+            information.add(fontRenderer.listFormattedStringToWidth(String.format("%s: %s", Strings.enchantingCost, totalCost), maxWidth));
         }
         else if (ConfigurationSettings.AllowRepair && !levelChanged() && container.tableInventory.getStackInSlot(0).isItemDamaged())
         {
-            information.add(fontRendererObj.listFormattedStringToWidth(String.format("%s: %s", Strings.repairCost, totalCost), maxWidth));
+            information.add(fontRenderer.listFormattedStringToWidth(String.format("%s: %s", Strings.repairCost, totalCost), maxWidth));
         }
-        information.add(fontRendererObj.listFormattedStringToWidth(String.format("%s: %s", Strings.maxEnchantLevel, container.bookCases()), maxWidth));
+        information.add(fontRenderer.listFormattedStringToWidth(String.format("%s: %s", Strings.maxEnchantLevel, container.bookCases()), maxWidth));
 
         for (final List<String> display : information)
         {
-            int height = information.indexOf(display) == 0 ? guiTop + fontRendererObj.FONT_HEIGHT + 8 : guiTop + (fontRendererObj.FONT_HEIGHT + 8) * (information.indexOf(display) + 1);
+            int height = information.indexOf(display) == 0 ? guiTop + fontRenderer.FONT_HEIGHT + 8 : guiTop + (fontRenderer.FONT_HEIGHT + 8) * (information.indexOf(display) + 1);
             if (information.indexOf(display) > 0)
             {
                 for (int i = information.indexOf(display) - 1; i >= 0; i--)
                 {
-                    height += (fontRendererObj.FONT_HEIGHT + 3) * (information.get(i).size() - 1);
+                    height += (fontRenderer.FONT_HEIGHT + 3) * (information.get(i).size() - 1);
                 }
             }
 
             try
             {
-                drawHoveringText(display, guiLeft - 20 - maxWidth, height, fontRendererObj);
+                drawHoveringText(display, guiLeft - 20 - maxWidth, height, fontRenderer);
             }
             catch (NoSuchMethodError e)
             {
@@ -309,7 +316,7 @@ public class GuiModTable extends GuiContainer
                 drawCreativeTabHoveringText(sb.toString(), guiLeft - 20 - maxWidth, height);
                 if (!TMInagged)
                 {
-                    EnchantingPlus.log.error("Please update or remove NEI / TMI. It is causing issues.");
+                    EnchantingPlus.log.warning("Please update or remove NEI / TMI. It is causing issues.");
                     TMInagged = true;
                 }
             }
@@ -330,10 +337,10 @@ public class GuiModTable extends GuiContainer
             final List<String> display = new ArrayList<String>();
 
             display.add(name);
-            display.addAll(fontRendererObj.listFormattedStringToWidth(info, 150));
+            display.addAll(fontRenderer.listFormattedStringToWidth(info, 150));
             try
             {
-                drawHoveringText(display, par1, par2, fontRendererObj);
+                drawHoveringText(display, par1, par2, fontRenderer);
             }
             catch (NoSuchMethodError e)
             {
@@ -347,7 +354,7 @@ public class GuiModTable extends GuiContainer
                 drawCreativeTabHoveringText(sb.toString(), guiLeft - 20 - maxWidth, height);
                 if (!TMInagged)
                 {
-                    EnchantingPlus.log.error("Please update or remove NEI / TMI. It is causing issues.");
+                    EnchantingPlus.log.warning("Please update or remove NEI / TMI. It is causing issues.");
                     TMInagged = true;
                 }
             }
@@ -355,7 +362,7 @@ public class GuiModTable extends GuiContainer
 
         if (!error.isEmpty())
         {
-            drawCreativeTabHoveringText(error, (xSize + guiLeft) / 2 - fontRendererObj.getStringWidth(error) / 4, guiTop - fontRendererObj.FONT_HEIGHT);
+            drawCreativeTabHoveringText(error, (xSize + guiLeft) / 2 - fontRenderer.getStringWidth(error) / 4, guiTop - fontRenderer.FONT_HEIGHT);
         }
     }
 
@@ -432,7 +439,7 @@ public class GuiModTable extends GuiContainer
         buttonList.add(new GuiIcon(0, guiLeft + guiOffset + 9, guiTop + 38, "E").customTexture(0));
         buttonList.add(new GuiIcon(1, guiLeft + guiOffset + 9, guiTop + 63, "R").customTexture(0));
         final String s = "Vanilla";
-        buttonList.add(new GuiButton(2, guiLeft + xSize + 10, guiTop + 5, fontRendererObj.getStringWidth(s) + 10, 20, s));
+        buttonList.add(new GuiButton(2, guiLeft + xSize + 10, guiTop + 5, fontRenderer.getStringWidth(s) + 10, 20, s));
 
         dirty = true;
     }
@@ -586,7 +593,7 @@ public class GuiModTable extends GuiContainer
         }
         else if (item.enchantmentLevel < level && !item.disabled)
         {
-            if (EnchantHelper.containsKey(container.tableInventory.getStackInSlot(0).getTagCompound().getTagList("restrictions", 10), item.enchantment.effectId,
+            if (EnchantHelper.containsKey(container.tableInventory.getStackInSlot(0).getTagCompound().getTagList("restrictions"), item.enchantment.effectId,
                     item.enchantmentLevel) || ConfigurationSettings.allowDisenUnowned)
             {
                 totalCost += container.disenchantmentCost(item.enchantment.effectId, item.enchantmentLevel, level);
@@ -603,7 +610,7 @@ public class GuiModTable extends GuiContainer
 
     private void handleButtonLabels(Map<Integer, Integer> enchantments)
     {
-        if (!ConfigurationSettings.classicMode && container.currentItemIs(Items.enchanted_book) && !container.hasPlayerUnlocked(enchantments.keySet()))
+        if (!ConfigurationSettings.classicMode && container.currentItemIs(Item.enchantedBook) && !container.hasPlayerUnlocked(enchantments.keySet()))
         {
             ((GuiIcon) buttonList.get(1)).setDisplayString("U");
         }
@@ -769,7 +776,7 @@ public class GuiModTable extends GuiContainer
                     * (enchantmentLevel / (double) enchantment.getMaxLevel())) : xPos + 1 + width - 6;
 
             drawRect(indexX, yPos + 1, indexX + 5, yPos - 1 + height, 0xff000000);
-            fontRendererObj.drawString(getTranslatedName(), xPos + 5, yPos + height / 4, 0x55aaff00);
+            fontRenderer.drawString(getTranslatedName(), xPos + 5, yPos + height / 4, 0x55aaff00);
             if (disabled)
             {
                 drawRect(xPos, yPos + 1, xPos + width, yPos - 1 + height, 0x44aaffff);

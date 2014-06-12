@@ -85,7 +85,7 @@ public class EnchantmentHelp
 
     public static boolean isBlackListed(Item item)
     {
-        return itemBlackList.contains(Item.getIdFromItem(item));
+        return itemBlackList.contains(item.itemID);
     }
 
     public static boolean putBlackList(String string)

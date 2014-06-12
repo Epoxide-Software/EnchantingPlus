@@ -2,9 +2,10 @@ package com.aesireanempire.eplus.items;
 
 import com.aesireanempire.eplus.blocks.Blocks;
 import com.aesireanempire.eplus.inventory.TileEnchantTable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEnchantmentTable;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -13,14 +14,15 @@ import net.minecraft.world.World;
 
 public class ItemTableUpgrade extends Item
 {
-    public ItemTableUpgrade()
+    public ItemTableUpgrade(int itemId)
     {
+        super(itemId);
         setMaxStackSize(16);
         setCreativeTab(CreativeTabs.tabDecorations);
     }
 
     @Override
-    public void registerIcons(IIconRegister par1IconRegister)
+    public void registerIcons(IconRegister par1IconRegister)
     {
         this.itemIcon = par1IconRegister.registerIcon("eplus:enchanting_table_upgrade");
     }
@@ -30,12 +32,12 @@ public class ItemTableUpgrade extends Item
     {
         if (!world.isRemote)
         {
-            Block block = world.getBlock(x, y, z);
+            Block block = Block.blocksList[world.getBlockId(x, y, z)];
 
             if (block instanceof BlockEnchantmentTable)
             {
-                world.setBlock(x, y, z, Blocks.table);
-                world.setTileEntity(x, y, z, new TileEnchantTable());
+                world.setBlock(x, y, z, Blocks.table.blockID);
+                world.setBlockTileEntity(x, y, z, new TileEnchantTable());
                 itemStack.stackSize--;
                 return true;
             }

@@ -1,28 +1,36 @@
 package com.aesireanempire.eplus.handlers;
 
 import com.aesireanempire.eplus.lib.References;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatMessageComponent;
+
+import java.util.EnumSet;
+
+import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.TickType;
 
 /**
  * @author Freyja Lesser GNU Public License v3
  *         (http://www.gnu.org/licenses/lgpl.html)
  */
-public class VersionTickHandler
+public class VersionTickHandler implements ITickHandler
 {
     private boolean messageSent;
 
-    @SubscribeEvent
-    public void versionNag(PlayerEvent.PlayerLoggedInEvent event)
+    public void sendChatToPlayer(EntityPlayer player, String message)
+    {
+        player.sendChatToPlayer(ChatMessageComponent.createFromText(message));
+    }
+
+    @Override public void tickStart(EnumSet<TickType> tickTypes, Object... objects)
     {
         if (messageSent)
         {
             return;
         }
 
-        final EntityPlayer player = event.player;
+        final EntityPlayer player = (EntityPlayer) objects[1];
 
         if (Version.versionSeen() && Version.isVersionCheckComplete())
         {
@@ -35,8 +43,18 @@ public class VersionTickHandler
         messageSent = true;
     }
 
-    public void sendChatToPlayer(EntityPlayer player, String message)
+    @Override public void tickEnd(EnumSet<TickType> tickTypes, Object... objects)
     {
-        player.addChatComponentMessage(new ChatComponentText(message));
+
+    }
+
+    @Override public EnumSet<TickType> ticks()
+    {
+        return EnumSet.of(TickType.PLAYER);
+    }
+
+    @Override public String getLabel()
+    {
+        return "version_tick_handler";
     }
 }

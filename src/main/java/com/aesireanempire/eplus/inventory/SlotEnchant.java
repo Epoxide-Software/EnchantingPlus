@@ -1,8 +1,8 @@
 package com.aesireanempire.eplus.inventory;
 
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -31,7 +31,7 @@ public class SlotEnchant extends Slot
     @Override
     public boolean isItemValid(ItemStack par1ItemStack)
     {
-        return par1ItemStack.isItemEnchantable() || par1ItemStack.isItemEnchanted() || par1ItemStack.getItem() == Items.book
-                || par1ItemStack.getItem() == Items.enchanted_book;
+        return par1ItemStack.isItemEnchantable() || par1ItemStack.isItemEnchanted() || par1ItemStack.getItem() == Item.book
+                || par1ItemStack.getItem() == Item.enchantedBook;
     }
 }
