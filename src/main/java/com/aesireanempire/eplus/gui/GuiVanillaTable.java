@@ -5,6 +5,7 @@ import com.aesireanempire.eplus.lib.ConfigurationSettings;
 import com.aesireanempire.eplus.lib.GuiIds;
 import com.aesireanempire.eplus.lib.Strings;
 import com.aesireanempire.eplus.network.packets.GuiPacket;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiEnchantment;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,7 +51,7 @@ public class GuiVanillaTable extends GuiEnchantment
     {
         super.drawScreen(par1, par2, par3);
         final String displayText = String.format("%s: %s", Strings.playerLevel, player.experienceLevel);
-        drawCreativeTabHoveringText(displayText, guiLeft - 20 - fontRendererObj.getStringWidth(displayText), guiTop + fontRendererObj.FONT_HEIGHT + 8);
+        drawCreativeTabHoveringText(displayText, guiLeft - 20 - fontRenderer.getStringWidth(displayText), guiTop + fontRenderer.FONT_HEIGHT + 8);
     }
 
     @SuppressWarnings("unchecked")
@@ -61,7 +62,7 @@ public class GuiVanillaTable extends GuiEnchantment
         final String s = "Mod";
         if (ConfigurationSettings.useMod)
         {
-            buttonList.add(new GuiButton(0, guiLeft + xSize + 10, guiTop + 5, fontRendererObj.getStringWidth(s) + 10, 20, s));
+            buttonList.add(new GuiButton(0, guiLeft + xSize + 10, guiTop + 5, fontRenderer.getStringWidth(s) + 10, 20, s));
         }
     }
 }

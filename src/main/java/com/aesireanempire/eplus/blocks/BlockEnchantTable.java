@@ -4,11 +4,12 @@ import com.aesireanempire.eplus.EnchantingPlus;
 import com.aesireanempire.eplus.inventory.TileEnchantTable;
 import com.aesireanempire.eplus.lib.ConfigurationSettings;
 import com.aesireanempire.eplus.lib.GuiIds;
+
 import net.minecraft.block.BlockEnchantmentTable;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -23,20 +24,21 @@ import java.util.Random;
 public class BlockEnchantTable extends BlockEnchantmentTable
 {
 
-    private IIcon field_94461_a;
-    private IIcon field_94460_b;
+    private Icon field_94461_a;
+    private Icon field_94460_b;
 
-    public BlockEnchantTable()
+    public BlockEnchantTable(int blockId)
     {
+        super(blockId);
         if (ConfigurationSettings.hasLight)
         {
-            setLightLevel(1.0F);
+            setLightValue(1.0F);
         }
 
     }
 
     @Override
-    public TileEntity createNewTileEntity(World par1World, int meta)
+    public TileEntity createNewTileEntity(World par1World)
     {
         return new TileEnchantTable();
     }
@@ -80,7 +82,7 @@ public class BlockEnchantTable extends BlockEnchantmentTable
             var15 = (par5Random.nextFloat() - 0.5D) * 0.5D;
             var17 = (par5Random.nextFloat() - 0.5D) * 0.5D;
 
-            if (par1World.getBlock(x - 1, y, z) != Blocks.table && par1World.getBlock(x + 1, y, z) != Blocks.table)
+            if (par1World.getBlockId(x - 1, y, z) != Blocks.table.blockID && par1World.getBlockId(x + 1, y, z) != Blocks.table.blockID)
             {
                 var7 = x + 0.5D + 0.25D * var19;
                 var13 = par5Random.nextFloat() * 2.0F * var19;
@@ -96,13 +98,13 @@ public class BlockEnchantTable extends BlockEnchantmentTable
     }
 
     @Override
-    public IIcon getIcon(int par1, int par2)
+    public Icon getIcon(int par1, int par2)
     {
         return par1 == 0 ? this.field_94460_b : (par1 == 1 ? this.field_94461_a : this.blockIcon);
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister par1IconRegister)
+    public void registerIcons(IconRegister par1IconRegister)
     {
         this.blockIcon = par1IconRegister.registerIcon("eplus:enchanting_table_side");
         this.field_94461_a = par1IconRegister.registerIcon("eplus:enchanting_table_top");

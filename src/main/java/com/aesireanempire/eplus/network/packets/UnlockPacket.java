@@ -1,15 +1,19 @@
 package com.aesireanempire.eplus.network.packets;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import com.aesireanempire.eplus.inventory.ContainerEnchantTable;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 /**
  * Created by freyja
  */
-public class UnlockPacket implements IPacket
+public class UnlockPacket extends BasePacket
 {
     private HashMap<Integer, Integer> enchants;
 
@@ -24,7 +28,7 @@ public class UnlockPacket implements IPacket
     }
 
     @Override
-    public void readBytes(ByteBuf bytes)
+    public void readBytes(ByteArrayDataInput bytes)
     {
         final HashMap<Integer, Integer> enchants = new HashMap<Integer, Integer>();
 
@@ -39,7 +43,7 @@ public class UnlockPacket implements IPacket
     }
 
     @Override
-    public void writeBytes(ByteBuf bytes)
+    public void writeBytes(ByteArrayDataOutput bytes)
     {
         bytes.writeInt(enchants.size());
 

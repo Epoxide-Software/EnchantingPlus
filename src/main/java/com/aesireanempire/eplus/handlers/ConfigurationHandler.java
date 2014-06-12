@@ -5,7 +5,7 @@ import com.aesireanempire.eplus.lib.ConfigurationSettings;
 import com.aesireanempire.eplus.lib.EnchantmentHelp;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.Configuration;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -78,6 +78,9 @@ public class ConfigurationHandler
             clampSetting(CATEGORY_SERVER, "minimumBook", 0);
 
             ConfigurationSettings.classicMode = configuration.get(CATEGORY_SERVER, "classicMode", false).getBoolean(false);
+
+            ConfigurationSettings.tableID = configuration.getBlock(CATEGORY_IDS, "AdvancedEnchantmentTable", 3050).getInt();
+            ConfigurationSettings.upgradeID = configuration.getItem(CATEGORY_IDS, "EnchantmentTableUpgradte", 10205).getInt();
 
         }
         catch (final Exception e)

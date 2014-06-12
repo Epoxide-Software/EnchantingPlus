@@ -32,14 +32,14 @@ public class GuiHandler implements IGuiHandler
         switch (ID)
         {
             case GuiIds.ModTable:
-                tileEntity = world.getTileEntity(x, y, z);
+                tileEntity = world.getBlockTileEntity(x, y, z);
                 if (tileEntity == null || !(tileEntity instanceof TileEnchantTable))
                 {
                     return null;
                 }
                 return new GuiModTable(player.inventory, world, x, y, z, (TileEnchantTable) tileEntity);
             case GuiIds.VanillaTable:
-                tileEntity = world.getTileEntity(x, y, z);
+                tileEntity = world.getBlockTileEntity(x, y, z);
                 if (tileEntity == null || !(tileEntity instanceof TileEnchantTable))
                 {
                     return null;
@@ -57,14 +57,14 @@ public class GuiHandler implements IGuiHandler
         switch (ID)
         {
             case GuiIds.ModTable:
-                tileEntity = world.getTileEntity(x, y, z);
+                tileEntity = world.getBlockTileEntity(x, y, z);
                 if (tileEntity == null || !(tileEntity instanceof TileEnchantTable))
                 {
                     return null;
                 }
                 return new ContainerEnchantTable(player.inventory, world, x, y, z, (TileEnchantTable) tileEntity);
             case GuiIds.VanillaTable:
-                tileEntity = world.getTileEntity(x, y, z);
+                tileEntity = world.getBlockTileEntity(x, y, z);
                 if (tileEntity == null || !(tileEntity instanceof TileEnchantTable))
                 {
                     return null;

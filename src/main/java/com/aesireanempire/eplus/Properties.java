@@ -40,7 +40,7 @@ public class Properties implements IExtendedEntityProperties
     {
         NBTTagCompound nbtTagCompound = compound.getCompoundTag("eplus_tag");
 
-        Set<Integer> enchantmentIds = nbtTagCompound.func_150296_c();
+        Set<Integer> enchantmentIds = (Set<Integer>) nbtTagCompound.getTags();
 
         ArrayList<Enchantment> enchantments = new ArrayList<Enchantment>();
 

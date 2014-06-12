@@ -1,46 +1,48 @@
 package com.aesireanempire.eplus.network.packets;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.NetHandlerPlayServer;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
+
+import com.aesireanempire.eplus.EnchantingPlus;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet250CustomPayload;
+
+import java.net.ProtocolException;
+
+import cpw.mods.fml.common.network.IPacketHandler;
+import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Created by freyja
  */
-public class ChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket>
+public class ChannelHandler implements IPacketHandler
 {
-    public ChannelHandler()
-    {
-        addDiscriminator(0, EnchantPacket.class);
-        addDiscriminator(1, RepairPacket.class);
-        addDiscriminator(2, ErrorPacket.class);
-        addDiscriminator(3, GuiPacket.class);
-        addDiscriminator(4, UnlockPacket.class);
-    }
 
-    @Override
-    public void encodeInto(ChannelHandlerContext ctx, IPacket packet, ByteBuf data) throws Exception
+    @Override public void onPacketData(INetworkManager iNetworkManager, Packet250CustomPayload packet, Player player)
     {
-        packet.writeBytes(data);
-    }
-
-    @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf data, IPacket packet)
-    {
-        packet.readBytes(data);
-        switch (FMLCommonHandler.instance().getEffectiveSide())
+        try
         {
-            case CLIENT:
-                INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-                packet.executeClient(((NetHandlerPlayServer) netHandler).playerEntity);
-            case SERVER:
-                netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-                packet.executeServer(((NetHandlerPlayServer) netHandler).playerEntity);
-                break;
+            final EntityPlayer entityPlayer = (EntityPlayer) player;
+            final ByteArrayDataInput input = ByteStreams.newDataInput(packet.data);
+            final int packetId = input.readUnsignedByte();
+
+            final BasePacket basePacket = BasePacket.constructPacket(packetId);
+            basePacket.readBytes(input);
+            basePacket.execute(entityPlayer, entityPlayer.worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+        } catch (final ProtocolException ex)
+        {
+            if (player instanceof EntityPlayerMP)
+            {
+                ((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer("Protocol Exception!");
+                EnchantingPlus.log.warning(((EntityPlayer) player).username + " cause a Protocol Exception!");
+            }
+        } catch (final Exception ex)
+        {
+            throw new RuntimeException("Unexpected Reflection exception during Packet construction!", ex);
         }
     }
 }

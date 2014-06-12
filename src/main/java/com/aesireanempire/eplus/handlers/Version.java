@@ -2,14 +2,16 @@ package com.aesireanempire.eplus.handlers;
 
 import com.aesireanempire.eplus.EnchantingPlus;
 import com.aesireanempire.eplus.lib.References;
-import cpw.mods.fml.common.Loader;
-import net.minecraftforge.common.config.Property;
+
+import net.minecraftforge.common.Property;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import cpw.mods.fml.common.Loader;
 
 /**
  * @author Freyja Lesser GNU Public License v3
@@ -160,7 +162,7 @@ public class Version implements Runnable
         }
         catch (final Exception ex)
         {
-            EnchantingPlus.log.warn("Unable to read from remote version authority.", new Object[0]);
+            EnchantingPlus.log.warning("Unable to read from remote version authority.");
             ex.printStackTrace();
             currentVersion = EnumUpdateState.CONNECTION_ERROR;
             recommendedVersion = new ModVersion("0.0.0");
@@ -171,7 +173,7 @@ public class Version implements Runnable
 
         if (compared == 0)
         {
-            EnchantingPlus.log.info("Using the latest version for Minecraft " + getMinecraftVersion(), new Object[0]);
+            EnchantingPlus.log.info("Using the latest version for Minecraft " + getMinecraftVersion());
             currentVersion = EnumUpdateState.CURRENT;
             updated = false;
         }

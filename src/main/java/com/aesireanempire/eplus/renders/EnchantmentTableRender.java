@@ -22,11 +22,11 @@ public class EnchantmentTableRender extends TileEntitySpecialRenderer
     {
         GL11.glPushMatrix();
         GL11.glTranslatef((float)xPos + 0.5F, (float)yPos + 0.75F, (float)zPos + 0.5F);
-        float f1 = (float)table.field_145926_a + tickPartial;
+        float f1 = (float)table.tickCount + tickPartial;
         GL11.glTranslatef(0.0F, 0.1F + MathHelper.sin(f1 * 0.1F) * 0.01F, 0.0F);
         float f2;
 
-        for (f2 = table.field_145928_o - table.field_145925_p; f2 >= (float)Math.PI; f2 -= ((float)Math.PI * 2F))
+        for (f2 = table.bookRotation2 - table.bookRotationPrev; f2 >= (float)Math.PI; f2 -= ((float)Math.PI * 2F))
         {
             ;
         }
@@ -36,12 +36,12 @@ public class EnchantmentTableRender extends TileEntitySpecialRenderer
             f2 += ((float)Math.PI * 2F);
         }
 
-        float f3 = table.field_145925_p + f2 * tickPartial;
+        float f3 = table.bookRotationPrev + f2 * tickPartial;
         GL11.glRotatef(-f3 * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(80.0F, 0.0F, 0.0F, 1.0F);
         this.bindTexture(texture);
-        float f4 = table.field_145931_j + (table.field_145933_i - table.field_145931_j) * tickPartial + 0.25F;
-        float f5 = table.field_145931_j + (table.field_145933_i - table.field_145931_j) * tickPartial + 0.75F;
+        float f4 = table.pageFlipPrev + (table.pageFlip - table.pageFlipPrev) * tickPartial + 0.25F;
+        float f5 = table.pageFlipPrev + (table.pageFlip - table.pageFlipPrev) * tickPartial + 0.75F;
         f4 = (f4 - (float)MathHelper.truncateDoubleToInt((double)f4)) * 1.6F - 0.3F;
         f5 = (f5 - (float)MathHelper.truncateDoubleToInt((double)f5)) * 1.6F - 0.3F;
 
@@ -65,7 +65,7 @@ public class EnchantmentTableRender extends TileEntitySpecialRenderer
             f5 = 1.0F;
         }
 
-        float f6 = table.field_145927_n + (table.field_145930_m - table.field_145927_n) * tickPartial;
+        float f6 = table.bookSpreadPrev + (table.bookSpread - table.bookSpreadPrev) * tickPartial;
         GL11.glEnable(GL11.GL_CULL_FACE);
         this.enchantmentBook.render((Entity)null, f1, f4, f5, f6, 0.0F, 0.0625F);
         GL11.glPopMatrix();

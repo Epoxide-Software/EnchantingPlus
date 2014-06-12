@@ -3,7 +3,6 @@ package com.aesireanempire.eplus.helper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +33,7 @@ public class EnchantHelper
     {
         // Item.enchantedBook.get(new EnchantmentData(obj, 1));
 
-        return itemStack != null && itemStack.getItem() == Items.book && obj.isAllowedOnBooks() || obj != null && obj.canApplyAtEnchantingTable(itemStack) ;
+        return itemStack != null && itemStack.getItem() == Item.book && obj.isAllowedOnBooks() || obj != null && obj.canApplyAtEnchantingTable(itemStack) ;
     }
 
     /**
@@ -51,7 +50,7 @@ public class EnchantHelper
             flag = !itemStack.getTagCompound().hasKey("charge");
         }
 
-        return itemStack.getItem().getItemEnchantability() > 0 && (itemStack.getItem() == Items.book || itemStack.isItemEnchantable() && flag);
+        return itemStack.getItem().getItemEnchantability() > 0 && (itemStack.getItem() == Item.book || itemStack.isItemEnchantable() && flag);
     }
 
     /**
@@ -63,7 +62,7 @@ public class EnchantHelper
     public static boolean isItemEnchanted(ItemStack itemStack)
     {
         return itemStack.hasTagCompound()
-                && (itemStack.getItem() != Items.enchanted_book ? itemStack.stackTagCompound.hasKey("ench") : itemStack.stackTagCompound.hasKey("StoredEnchantments"));
+                && (itemStack.getItem() != Item.enchantedBook ? itemStack.stackTagCompound.hasKey("ench") : itemStack.stackTagCompound.hasKey("StoredEnchantments"));
     }
 
     /**
@@ -81,7 +80,7 @@ public class EnchantHelper
 
         if (itemStack.hasTagCompound())
         {
-            restrictions = itemStack.getTagCompound().getTagList("restrictions", 10);
+            restrictions = itemStack.getTagCompound().getTagList("restrictions");
         }
         else
         {
@@ -122,14 +121,14 @@ public class EnchantHelper
             }
         }
 
-        if (itemStack.getItem() == Items.book)
+        if (itemStack.getItem() == Item.book)
         {
-            itemStack = new ItemStack(Items.enchanted_book);
+            itemStack = new ItemStack(Item.enchantedBook);
         }
 
         if (nbttaglist.tagCount() > 0)
         {
-            if (itemStack.getItem() != Items.enchanted_book)
+            if (itemStack.getItem() != Item.enchantedBook)
             {
                 itemStack.setTagInfo("ench", nbttaglist);
             }
@@ -141,7 +140,7 @@ public class EnchantHelper
         }
         else if (itemStack.hasTagCompound())
         {
-            if (itemStack.getItem() != Items.enchanted_book)
+            if (itemStack.getItem() != Item.enchantedBook)
             {
                 itemStack.getTagCompound().removeTag("ench");
             }
@@ -149,7 +148,7 @@ public class EnchantHelper
             {
                 itemStack.getTagCompound().removeTag("StoredEnchantments");
                 itemStack.stackTagCompound = null;
-                itemStack = new ItemStack(Items.book);
+                itemStack = new ItemStack(Item.book);
             }
         }
         return itemStack;
@@ -159,7 +158,7 @@ public class EnchantHelper
     {
         for (int k = 0; k < restrictions.tagCount(); k++)
         {
-            NBTTagCompound tag = restrictions.getCompoundTagAt(k);
+            NBTTagCompound tag = (NBTTagCompound) restrictions.tagAt(k);
             if (tag.getShort("lvl") == y && tag.getShort("id") == id)
             {
                 return true;
@@ -170,9 +169,9 @@ public class EnchantHelper
 
     public static boolean isNewItemEnchantable(Item item)
     {
-        if (item.equals(Items.enchanted_book))
+        if (item.equals(Item.enchantedBook))
         {
-            return isItemEnchantable(new ItemStack(Items.book));
+            return isItemEnchantable(new ItemStack(Item.book));
         }
         return isItemEnchantable(new ItemStack(item));
     }

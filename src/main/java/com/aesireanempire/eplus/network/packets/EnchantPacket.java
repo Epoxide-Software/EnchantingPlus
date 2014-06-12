@@ -1,8 +1,11 @@
 package com.aesireanempire.eplus.network.packets;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import com.aesireanempire.eplus.EnchantingPlus;
 import com.aesireanempire.eplus.inventory.ContainerEnchantTable;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.HashMap;
@@ -10,7 +13,7 @@ import java.util.HashMap;
 /**
  * Created by freyja
  */
-public class EnchantPacket implements IPacket
+public class EnchantPacket extends BasePacket
 {
     protected int totalCost;
     protected HashMap<Integer, Integer> levels = new HashMap<Integer, Integer>();
@@ -29,7 +32,7 @@ public class EnchantPacket implements IPacket
     }
 
     @Override
-    public void readBytes(ByteBuf bytes)
+    public void readBytes(ByteArrayDataInput bytes)
     {
         final HashMap<Integer, Integer> enchants = new HashMap<Integer, Integer>();
         final HashMap<Integer, Integer> levels = new HashMap<Integer, Integer>();
@@ -55,7 +58,7 @@ public class EnchantPacket implements IPacket
     }
 
     @Override
-    public void writeBytes(ByteBuf bytes)
+    public void writeBytes(ByteArrayDataOutput bytes)
     {
         bytes.writeInt(totalCost);
         bytes.writeInt(enchants.size());

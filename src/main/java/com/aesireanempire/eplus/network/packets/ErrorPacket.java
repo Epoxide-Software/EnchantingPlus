@@ -1,15 +1,19 @@
 package com.aesireanempire.eplus.network.packets;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import com.aesireanempire.eplus.gui.GuiModTable;
-import cpw.mods.fml.client.FMLClientHandler;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+
+import cpw.mods.fml.client.FMLClientHandler;
 
 /**
  * Created by freyja
  */
-public class ErrorPacket implements IPacket
+public class ErrorPacket extends BasePacket
 {
     protected String error;
 
@@ -23,16 +27,15 @@ public class ErrorPacket implements IPacket
         this.error = localizedMessage;
     }
 
-    @Override public void readBytes(ByteBuf bytes)
+    @Override public void readBytes(ByteArrayDataInput bytes)
     {
-        int length = bytes.readInt();
-        error = bytes.readBytes(length).toString();
+        error = bytes.readUTF();
     }
 
-    @Override public void writeBytes(ByteBuf bytes)
+    @Override public void writeBytes(ByteArrayDataOutput bytes)
     {
-        bytes.writeInt(error.length());
-        bytes.writeBytes(error.getBytes());
+        bytes.writeUTF(error);
+
     }
 
     @Override public void executeClient(EntityPlayer player)

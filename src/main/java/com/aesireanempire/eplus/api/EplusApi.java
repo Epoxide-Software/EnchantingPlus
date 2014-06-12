@@ -1,7 +1,5 @@
 package com.aesireanempire.eplus.api;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
@@ -12,6 +10,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * @author Freyja Lesser GNU Public License v3
@@ -150,7 +151,7 @@ public class EplusApi
      */
     public static void addItemToBlackList(Item item)
     {
-        addItemToBlackList(Item.getIdFromItem(item));
+        addItemToBlackList(item.itemID);
     }
 
     /**
@@ -179,7 +180,7 @@ public class EplusApi
             int itemId = 0;
             if (Item.class.isAssignableFrom(item.getClass()))
             {
-                itemId = Item.getIdFromItem((Item) item);
+                itemId = ((Item)item).itemID;
             }
             else if (Integer.class.isAssignableFrom(item.getClass()))
             {
