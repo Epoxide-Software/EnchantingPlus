@@ -15,7 +15,6 @@ public class Items
     {
         EnchantingPlus.log.info("Initializing Items.");
         final Item tableUpgrade = new ItemTableUpgrade().setUnlocalizedName("tableUpgrade");
-        LanguageRegistry.addName(tableUpgrade, "Table Upgrade");
 
         GameRegistry.registerItem(tableUpgrade, tableUpgrade.getUnlocalizedName());
 

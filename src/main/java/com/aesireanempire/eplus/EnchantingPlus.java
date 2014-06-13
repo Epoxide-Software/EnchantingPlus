@@ -4,7 +4,6 @@ import com.aesireanempire.eplus.api.EplusPlugin;
 import com.aesireanempire.eplus.blocks.Blocks;
 import com.aesireanempire.eplus.commands.EplusCommands;
 import com.aesireanempire.eplus.handlers.ConfigurationHandler;
-import com.aesireanempire.eplus.handlers.LanguageHandler;
 import com.aesireanempire.eplus.handlers.PluginHandler;
 import com.aesireanempire.eplus.handlers.Version;
 import com.aesireanempire.eplus.inventory.TileEnchantTable;
@@ -15,14 +14,7 @@ import com.aesireanempire.eplus.network.GuiHandler;
 import com.aesireanempire.eplus.network.packets.ChannelHandler;
 import com.aesireanempire.eplus.network.packets.IPacket;
 import com.aesireanempire.eplus.network.proxies.CommonProxy;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLOutboundHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -32,6 +24,19 @@ import net.minecraftforge.common.MinecraftForge;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLOutboundHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Enchanting Plus
@@ -109,17 +114,6 @@ public class EnchantingPlus
 
         PluginHandler.init(event.getAsmData().getAll(EplusPlugin.class.getCanonicalName()));
         PluginHandler.initPlugins(event.getModState());
-
-        // Strings.buildDefaultXML("en_US");
-        try
-        {
-            LanguageHandler.getInstance().addLanguages("/assets/eplus/lang/langs.txt");
-        }
-        catch (final NullPointerException e)
-        {
-            log.error(String.format("Can not load %s", "/assets/eplus/lang/langs.txt"));
-        }
-        LanguageHandler.getInstance().loadLangauges();
 
         Blocks.init();
         Items.init();
