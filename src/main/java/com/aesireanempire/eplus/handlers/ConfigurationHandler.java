@@ -79,6 +79,8 @@ public class ConfigurationHandler
 
             ConfigurationSettings.classicMode = configuration.get(CATEGORY_SERVER, "classicMode", false).getBoolean(false);
 
+            ConfigurationSettings.allEnchantments = configuration.get(CATEGORY_SERVER, "allEnchantments", false, "Allow Enchanting of enchantments that normally can't be applied via a table").getBoolean(false);
+
         }
         catch (final Exception e)
         {

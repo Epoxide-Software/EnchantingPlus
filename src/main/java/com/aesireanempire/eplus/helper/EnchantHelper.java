@@ -1,5 +1,7 @@
 package com.aesireanempire.eplus.helper;
 
+import com.aesireanempire.eplus.lib.ConfigurationSettings;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +36,12 @@ public class EnchantHelper
     {
         // Item.enchantedBook.get(new EnchantmentData(obj, 1));
 
-        return itemStack != null && itemStack.getItem() == Items.book && obj.isAllowedOnBooks() || obj != null && obj.canApplyAtEnchantingTable(itemStack) ;
+        return itemStack != null && itemStack.getItem() == Items.book && obj.isAllowedOnBooks() || obj != null && isEnchantableViaConfig(itemStack, obj);
+    }
+
+    private static boolean isEnchantableViaConfig(ItemStack itemStack, Enchantment obj)
+    {
+        return ConfigurationSettings.allEnchantments ? obj.canApply(itemStack) : obj.canApplyAtEnchantingTable(itemStack);
     }
 
     /**
@@ -68,10 +75,9 @@ public class EnchantHelper
 
     /**
      * adds enchantments to an item
-     *  @param map       map of enchantments to add
+     *
+     * @param map       map of enchantments to add
      * @param itemStack the item to add enchantments to
-     * @param levels
-     * @param player
      */
     public static ItemStack setEnchantments(Map<?, ?> map, ItemStack itemStack, HashMap<Integer, Integer> levels, EntityPlayer player)
     {
@@ -180,7 +186,7 @@ public class EnchantHelper
     public static ItemStack removeEnchant(ItemStack itemStack, Enchantment enchantment)
     {
         Map enchantments = EnchantmentHelper.getEnchantments(itemStack);
-        if(enchantments.containsKey(enchantment.effectId))
+        if (enchantments.containsKey(enchantment.effectId))
         {
             enchantments.remove(enchantment.effectId);
         }

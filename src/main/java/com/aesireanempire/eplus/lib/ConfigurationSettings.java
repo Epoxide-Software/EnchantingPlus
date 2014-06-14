@@ -39,4 +39,5 @@ public class ConfigurationSettings
     public static boolean allowDisenUnowned;
 
     public static boolean classicMode;
+    public static boolean allEnchantments;
 }
