@@ -1,6 +1,7 @@
 package com.aesireanempire.eplus.blocks;
 
 import com.aesireanempire.eplus.EnchantingPlus;
+import com.aesireanempire.eplus.lib.ConfigurationSettings;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
