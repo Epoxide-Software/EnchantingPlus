@@ -87,7 +87,13 @@ task sourceJar(type: Jar) {
     classifier = 'source'
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
 artifacts {
     archives deobfJar
     archives sourceJar
+    archives javadocJar
 }
