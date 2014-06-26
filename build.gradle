@@ -87,6 +87,12 @@ task sourceJar(type: Jar) {
     classifier = 'source'
 }
 
+task apiJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'api'
+    include 'com/aesireanempire/eplus/api/**'
+}
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from 'build/docs/javadoc'
@@ -96,4 +102,5 @@ artifacts {
     archives deobfJar
     archives sourceJar
     archives javadocJar
+    archives apiJar
 }
