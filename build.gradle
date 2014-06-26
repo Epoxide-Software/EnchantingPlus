@@ -82,6 +82,12 @@ task deobfJar(type: Jar) {
     classifier = 'deobf'
 }
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'source'
+}
+
 artifacts {
     archives deobfJar
+    archives sourceJar
 }
