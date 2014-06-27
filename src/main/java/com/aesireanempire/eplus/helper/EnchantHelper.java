@@ -36,12 +36,18 @@ public class EnchantHelper
     {
         // Item.enchantedBook.get(new EnchantmentData(obj, 1));
 
-        return itemStack != null && itemStack.getItem() == Items.book && obj.isAllowedOnBooks() || obj != null && isEnchantableViaConfig(itemStack, obj);
+        return (itemStack != null && itemStack.getItem() == Items.book && obj.isAllowedOnBooks()) || (obj != null && isEnchantableViaConfig(itemStack, obj));
     }
 
     private static boolean isEnchantableViaConfig(ItemStack itemStack, Enchantment obj)
     {
-        return ConfigurationSettings.allEnchantments ? obj.canApply(itemStack) : obj.canApplyAtEnchantingTable(itemStack);
+        if (ConfigurationSettings.allEnchantments)
+        {
+            return obj.canApply(itemStack);
+        } else
+        {
+            return obj.canApplyAtEnchantingTable(itemStack);
+        }
     }
 
     /**
