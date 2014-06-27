@@ -44,20 +44,11 @@ task buildInfo() {
         ext.revision = "GITBORK"
     }
 
-    if (System.getenv().BUILD_NUMBER != null) {
-        ext.buildNum = "${System.getenv().BUILD_NUMBER}"
-    } else {
-        ext.buildNum = "${project.buildInfo.revision}"
-    }
+    ext.buildNum = System.getenv().BUILD_NUMBER != null ? "${System.getenv().BUILD_NUMBER}" : "${project.buildInfo.revision}"
 }
 
 ext.artifact_version = 'NFG'
-if (System.getenv().DEV_BUILD != null) {
-    artifact_version = "${config.mod_version}.${project.buildInfo.buildNum}"
-}
-if (System.getenv().DEV_BUILD == null) {
-    artifact_version = "${config.mod_version}"
-}
+artifact_version = System.getenv().DEV_BUILD == null ? "${config.mod_version}" : "${config.mod_version}.${project.buildInfo.buildNum}"
 
 version = "${config.minecraft_version}-${artifact_version}"
 
