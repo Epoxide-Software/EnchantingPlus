@@ -44,8 +44,8 @@ task buildInfo() {
         ext.revision = "GITBORK"
     }
 
-    if (System.getenv().build.number != null) {
-        ext.buildNum = "${System.getenv().build.number}"
+    if (System.getenv().build_number != null) {
+        ext.buildNum = "${System.getenv().build_number}"
     } else {
         ext.buildNum = "${project.buildInfo.revision}"
     }
