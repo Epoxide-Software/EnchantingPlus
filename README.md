@@ -1,3 +1,5 @@
+**This mod is currently being rewritten from the ground up. The team behind this rewrite has moved to a new repository which is not a fork. This new repository is for Enchanting Plus 4 or newer. The new repository can be found [here](https://github.com/Epoxide-MC/Enchanting-Plus)**
+
 Enchanting Plus
 =====
 Enchanting Plus is a Minecraft mod which gives players more control over their enchanting experience. 
